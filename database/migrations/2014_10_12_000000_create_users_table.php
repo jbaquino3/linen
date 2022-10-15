@@ -6,19 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
+    private $schema;
+
+    public function __construct() {
+        $this->schema = config("app.debug") ? "dev" : "dbo";
+    }
+
+    public function up() {
+        Schema::create($this->schema . "." . 'users', function (Blueprint $table) {
+            $table->string("employeeid")->primary();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->ulid('location_id');
+            $table->enum('role', ['USER', 'ADMIN', 'SUPER ADMIN']);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists($this->schema . "." . 'users');
     }
 };

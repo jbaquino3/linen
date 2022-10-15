@@ -6,14 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    private $schema;
+
+    public function __construct() {
+        $this->schema = config("app.debug") ? "dev" : "dbo";
+    }
+
     public function up()
     {
-        Schema::create('failed_jobs', function (Blueprint $table) {
+        Schema::create($this->schema . "." . 'failed_jobs', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
             $table->text('connection');
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists($this->schema . "." . 'failed_jobs');
     }
 };
