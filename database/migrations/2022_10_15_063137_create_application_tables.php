@@ -111,10 +111,12 @@ return new class extends Migration
             $table->decimal('quantity', 8, 2)->default(0);
             $table->enum('unit', ['PIECE', 'SPOOL', 'YARD', 'ROLL', 'SACK/BAG']);
             $table->ulid('transaction_id')->nullable();
+            $table->string('requested_by')->nullable();
             $table->string('processed_by')->nullable();
             $table->string('prepared_by')->nullable();
             $table->string('issued_by')->nullable();
             $table->string('cancelled_by')->nullable();
+            $table->datetime('requested_at')->nullable();
             $table->datetime('processed_at')->nullable();
             $table->datetime('prepared_at')->nullable();
             $table->datetime('issued_at')->nullable();
@@ -122,6 +124,7 @@ return new class extends Migration
             $table->softDeletes();
             
             $table->index('transaction_id');
+            $table->index('requested_by');
             $table->index('processed_by');
             $table->index('prepared_by');
             $table->index('issued_by');

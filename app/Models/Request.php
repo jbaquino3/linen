@@ -16,10 +16,12 @@ class Request extends Model {
         'quantity',
         'unit',
         'transaction_id',
+        'requested_by',
         'processed_by',
         'prepared_by',
         'issued_by',
         'cancelled_by',
+        'requested_at',
         'processed_at',
         'prepared_at',
         'issued_at',
@@ -28,10 +30,12 @@ class Request extends Model {
 
     protected $hidden = [
         'transaction_id',
+        'requested_by',
         'processed_by',
         'prepared_by',
         'issued_by',
-        'cancelled_by'
+        'cancelled_by',
+        'deleted_at'
     ];
 
     protected $with = ['transaction', 'remarks'];
@@ -42,6 +46,12 @@ class Request extends Model {
 
     public function remarks() {
         return $this->hasMany(RequestRemark::class, 'request_id');
+    }
+    
+    protected function requested_by_by_name(): Attribute {
+        return Attribute::make(
+            get: fn ($value, $attributes) => $attributes['requested_by'] ? User::find($attributes['requested_by'])->name : null
+        );
     }
     
     protected function processed_by_name(): Attribute {
