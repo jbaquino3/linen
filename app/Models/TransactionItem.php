@@ -12,13 +12,18 @@ class TransactionItem extends Model {
     public $timestamps = false;
 
     protected $fillable = [
-        'transaction_id', 'product_bulk_id', 'stock_numbers', 'issuance_additional_cost'
+        'transaction_id',
+        'product_bulk_id',
+        'stock_numbers',
+        'issuance_additional_cost'
     ];
+    protected $appends = ['stock_numbers'];
     
-    protected function stock_numbers(): Attribute {
-        return Attribute::make(
-            get: fn ($value) => json_decode($value),
-            set: fn ($value) => json_encode($value)
-        );
+    public function getStockNumbersAttribute($value) {
+        return json_decode($value, true);
+    }
+
+    public function setStockNumbersAttribute($value) {
+        $this->attributes["stock_numbers"] = json_encode($value);
     }
 }

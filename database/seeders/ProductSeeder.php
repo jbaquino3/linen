@@ -40,7 +40,7 @@ class ProductSeeder extends Seeder
             ])->first();
 
             // get stock_number
-            $stock_ids = \DB::table("nora.paul.linen_products")->where("product_bulk_id", $bulk_id)->orderBy("product_stock_id")->pluck("product_stock_id");
+            $stock_ids = \DB::table("nora.paul.linen_products")->whereNull("deleted_at")->where("product_bulk_id", $bulk_id)->orderBy("product_stock_id")->pluck("product_stock_id");
             $stock_numbers = [];
             foreach($stock_ids as $stock_id) {
                 array_push($stock_numbers, intval(explode("-",$stock_id)[1]));
