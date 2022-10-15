@@ -66,8 +66,10 @@ return new class extends Migration
             $table->datetime("received_at");
             $table->softDeletes();
             
+            $table->index('archived_by');
             $table->index('storage_id');
 
+            $table->foreign('archived_by')->references('employeeid')->on($this->schema . "." . 'users');
             $table->foreign('storage_id')->references('id')->on($this->schema . "." . 'storages');
         });
         
