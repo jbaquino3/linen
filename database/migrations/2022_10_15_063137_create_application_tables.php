@@ -86,6 +86,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->ulid('location_id');
             $table->enum('type', ['ISSUANCE', 'CONDEMN', 'RETURN', 'LOST']);
+            $table->date('transaction_date');
             $table->boolean('is_final')->default(false);
             $table->softDeletes();
             

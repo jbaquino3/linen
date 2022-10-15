@@ -43,7 +43,8 @@ class TransactionSeeder extends Seeder
             $transaction = Transaction::create([
                 "location_id" => Location::where("type", "WARD")->where("name", $ward->ward_name)->first()->id,
                 "type" => "ISSUANCE",
-                "is_final" => true
+                "is_final" => true,
+                "transaction_date" => $daily_ward->issuance_date
             ]);
 
             $products = \DB::select("
@@ -96,7 +97,8 @@ class TransactionSeeder extends Seeder
             $transaction = Transaction::create([
                 "location_id" => Location::where("type", "office")->where("name", $office->office_name)->first()->id,
                 "type" => "ISSUANCE",
-                "is_final" => true
+                "is_final" => true,
+                "transaction_date" => $daily_office->issuance_date
             ]);
 
             $products = \DB::select("
@@ -140,6 +142,7 @@ class TransactionSeeder extends Seeder
             from nora.paul.linen_products
             where issued_ward_id is not null
             and deleted_at is null
+            and returned_date is not null
             group by cast(returned_date as date), issued_ward_id
             order by returned_date, issued_ward_id
         ");
@@ -149,7 +152,8 @@ class TransactionSeeder extends Seeder
             $transaction = Transaction::create([
                 "location_id" => Location::where("type", "WARD")->where("name", $ward->ward_name)->first()->id,
                 "type" => "RETURN",
-                "is_final" => true
+                "is_final" => true,
+                "transaction_date" => $daily_ward->returned_date
             ]);
 
             $products = \DB::select("
@@ -159,6 +163,7 @@ class TransactionSeeder extends Seeder
                 from nora.paul.linen_products
                 where cast(returned_date as date) = ?
                 and deleted_at is null
+                and returned_date is not null
                 and issued_ward_id = ?
             ", [$daily_ward->returned_date, $daily_ward->issued_ward_id]);
 
@@ -191,6 +196,7 @@ class TransactionSeeder extends Seeder
             from nora.paul.linen_products
             where issued_office_id is not null
             and deleted_at is null
+            and returned_date is not null
             group by cast(returned_date as date), issued_office_id
             order by returned_date, issued_office_id
         ");
@@ -200,7 +206,8 @@ class TransactionSeeder extends Seeder
             $transaction = Transaction::create([
                 "location_id" => Location::where("type", "office")->where("name", $office->office_name)->first()->id,
                 "type" => "RETURN",
-                "is_final" => true
+                "is_final" => true,
+                "transaction_date" => $daily_office->returned_date
             ]);
 
             $products = \DB::select("
@@ -210,6 +217,7 @@ class TransactionSeeder extends Seeder
                 from nora.paul.linen_products
                 where cast(returned_date as date) = ?
                 and deleted_at is null
+                and returned_date is not null
                 and issued_office_id = ?
             ", [$daily_office->returned_date, $daily_office->issued_office_id]);
 

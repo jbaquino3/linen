@@ -12,7 +12,7 @@ class Transaction extends Model {
     public $timestamps = false;
 
     protected $fillable = [
-        'location_id', 'type', 'is_final'
+        'location_id', 'type', 'is_final', 'transaction_date'
     ];
 
     protected $casts = [
