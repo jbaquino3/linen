@@ -25,8 +25,6 @@ return new class extends Migration
 
             $table->index('table_name', 'row_id');
             $table->index('user_id');
-
-            $table->foreign('user_id')->references('employeeid')->on($this->schema . "." . 'users');
         });
         
         Schema::create($this->schema . "." . "locations", function (Blueprint $table) {
@@ -49,8 +47,6 @@ return new class extends Migration
             $table->softDeletes();
             
             $table->index('stock_room_id');
-
-            $table->foreign('stock_room_id')->references('id')->on($this->schema . "." . 'stock_rooms');
         });
 
         Schema::create($this->schema. "." . "materials", function (Blueprint $table) {
@@ -68,9 +64,6 @@ return new class extends Migration
             
             $table->index('archived_by');
             $table->index('storage_id');
-
-            $table->foreign('archived_by')->references('employeeid')->on($this->schema . "." . 'users');
-            $table->foreign('storage_id')->references('id')->on($this->schema . "." . 'storages');
         });
         
         Schema::create($this->schema . "." . "products", function (Blueprint $table) {
@@ -91,9 +84,6 @@ return new class extends Migration
             
             $table->index('material_stock_number');
             $table->index('storage_id');
-
-            $table->foreign('material_stock_number')->references('stock_number')->on($this->schema . "." . 'materials');
-            $table->foreign('storage_id')->references('id')->on($this->schema . "." . 'storages');
         });
         
         Schema::create($this->schema . "." . "transactions", function (Blueprint $table) {
@@ -104,8 +94,6 @@ return new class extends Migration
             $table->softDeletes();
             
             $table->index('location_id');
-
-            $table->foreign('location_id')->references('id')->on($this->schema . "." . 'locations');
         });
 
         Schema::create($this->schema . "." . "transaction_items", function (Blueprint $table) {
@@ -118,9 +106,6 @@ return new class extends Migration
             
             $table->index('transaction_id');
             $table->index('product_bulk_id');
-
-            $table->foreign('transaction_id')->references('id')->on($this->schema . "." . 'transactions');
-            $table->foreign('product_bulk_id')->references('bulk_id')->on($this->schema . "." . 'products');
         });
 
         Schema::create($this->schema . "." . "requests", function (Blueprint $table) {
@@ -144,12 +129,6 @@ return new class extends Migration
             $table->index('prepared_by');
             $table->index('issued_by');
             $table->index('cancelled_by');
-            
-            $table->foreign('transaction_id')->references('id')->on($this->schema . "." . 'transactions');
-            $table->foreign('processed_by')->references('employeeid')->on($this->schema . "." . 'users');
-            $table->foreign('prepared_by')->references('employeeid')->on($this->schema . "." . 'users');
-            $table->foreign('issued_by')->references('employeeid')->on($this->schema . "." . 'users');
-            $table->foreign('cancelled_by')->references('employeeid')->on($this->schema . "." . 'users');
         });
 
         Schema::create($this->schema . "." . "request_remarks", function (Blueprint $table) {
@@ -161,9 +140,6 @@ return new class extends Migration
             
             $table->index('remarks_by');
             $table->index('request_id');
-            
-            $table->foreign('remarks_by')->references('employeeid')->on($this->schema . "." . 'users');
-            $table->foreign('request_id')->references('id')->on($this->schema . "." . 'requests');
         });
     }
 
