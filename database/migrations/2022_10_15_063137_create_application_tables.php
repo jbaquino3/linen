@@ -53,8 +53,8 @@ return new class extends Migration
             $table->integer('stock_number')->primary();
             $table->string("description");
             $table->enum('unit', ['PIECE', 'SPOOL', 'YARD', 'ROLL', 'SACK/BAG']);
-            $table->float('unit_cost', 8, 2)->default(0);
-            $table->float('quantity', 8, 2)->default(0);
+            $table->decimal('unit_cost', 8, 2)->default(0);
+            $table->decimal('quantity', 8, 2)->default(0);
             $table->enum('type', ['RAW', 'READY-MADE']);
             $table->datetime("archived_at")->nullable();
             $table->string("archived_by")->nullable();
@@ -69,17 +69,13 @@ return new class extends Migration
         Schema::create($this->schema . "." . "products", function (Blueprint $table) {
             $table->string('bulk_id')->primary();
             $table->integer('material_stock_number')->nullable();
-            $table->integer('material_quantity')->default(0);
+            $table->decimal('material_quantity', 8, 2)->default(0);
             $table->ulid('storage_id')->nullable();
             $table->json('stock_numbers')->default("[]");
             $table->string('name');
             $table->enum('unit', ['PIECE', 'SPOOL', 'YARD', 'ROLL', 'SACK/BAG']);
-            $table->float('unit_cost', 8, 2)->default(0);
-            $table->float('quantity', 8, 2)->default(0);
-            $table->float('issued_quantity', 8, 2)->default(0);
-            $table->float('condemned_quantity', 8, 2)->default(0);
-            $table->float('returned_quantity', 8, 2)->default(0);
-            $table->float('lost_quantity', 8, 2)->default(0);
+            $table->decimal('unit_cost', 8, 2)->default(0);
+            $table->decimal('quantity', 8, 2)->default(0);
             $table->softDeletes();
             
             $table->index('material_stock_number');
@@ -101,7 +97,7 @@ return new class extends Migration
             $table->ulid('transaction_id');
             $table->string('product_bulk_id');
             $table->json('stock_numbers')->default("[]");
-            $table->float('issuance_additional_cost', 8, 2)->default(0);
+            $table->decimal('issuance_additional_cost', 8, 2)->default(0);
             $table->softDeletes();
             
             $table->index('transaction_id');
@@ -111,7 +107,7 @@ return new class extends Migration
         Schema::create($this->schema . "." . "requests", function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string('name');
-            $table->float('quantity', 8, 2)->default(0);
+            $table->decimal('quantity', 8, 2)->default(0);
             $table->enum('unit', ['PIECE', 'SPOOL', 'YARD', 'ROLL', 'SACK/BAG']);
             $table->ulid('transaction_id')->nullable();
             $table->string('processed_by')->nullable();
