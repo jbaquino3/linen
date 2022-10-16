@@ -29,6 +29,20 @@ class Material extends Model {
 
     protected $hidden = [ 'archived_by', 'storage_id', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
 
+    protected static function booted() {
+        static::creating(function ($model) {
+            $model->created_by = "2010743-create";
+
+            return $model;
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = "2010743-update";
+
+            return $model;
+        });
+    }
+    
     protected function archived_by_name(): Attribute {
         return Attribute::make(
             get: fn ($value, $attributes) => $attributes['archived_by'] ? User::find($attributes['archived_by'])->name : null
