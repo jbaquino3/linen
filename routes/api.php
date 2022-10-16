@@ -36,6 +36,10 @@ Route::group(['prefix' => 'location'], function () {
 
 Route::group(['prefix' => 'user'], function () {
     Route::get('/', [UserController::class, 'index']);
+    Route::get('{id}', [UserController::class, 'read']);
+    Route::post('/', [UserController::class, 'store']);
+    Route::put('{id}', [UserController::class, 'update']);
+    Route::delete('{id}', [UserController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'stock_room'], function () {
