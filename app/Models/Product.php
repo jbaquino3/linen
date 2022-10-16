@@ -27,8 +27,27 @@ class Product extends Model {
         'deleted_by'
     ];
 
+    protected static function booted() {
+        static::creating(function ($model) {
+            $model->created_by = "2010743-create";
+
+            return $model;
+        });
+
+        static::updating(function ($model) {
+            $model->updated_by = "2010743-update";
+
+            return $model;
+        });
+    }
+
     protected $hidden = [ 'material_stock_number', 'storage_id', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
     protected $appends = ['stock_numbers'];
+    protected $casts = [
+        "material_quantity" => "float",
+        "unit_cost" => "float",
+        "quantity" => "float"
+    ];
 
     protected function material_name(): Attribute {
         return Attribute::make(
@@ -43,7 +62,7 @@ class Product extends Model {
     }
 
     public function getStockNumbersAttribute($value) {
-        return json_decode($value, true);
+        return json_decode($this->attributes["stock_numbers"], true);
     }
 
     public function setStockNumbersAttribute($value) {

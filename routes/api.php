@@ -60,6 +60,10 @@ Route::group(['prefix' => 'material'], function () {
 
 Route::group(['prefix' => 'product'], function () {
     Route::get('/', [ProductController::class, 'index']);
+    Route::get('{id}', [MaterialController::class, 'read']);
+    Route::post('/', [MaterialController::class, 'store']);
+    Route::put('{id}', [MaterialController::class, 'update']);
+    Route::delete('{id}', [MaterialController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'transaction'], function () {
