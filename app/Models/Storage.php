@@ -16,15 +16,19 @@ class Storage extends Model {
         'deleted_by'
     ];
 
-    protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'stock_room_id', 'created_at', 'updated_at', 'deleted_at' ]; 
+    protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ]; 
     
-    protected $appends = [ 'stock_room_name' ];
+    protected $appends = [ 'stock_room_name', 'name' ];
     
     public function materials() {
         return $this->hasMany(Material::class, 'storage_id');
     }
 
+    public function getNameAttribute() {
+        return ucwords(strtolower($this->attributes['name']));
+    }
+
     public function getStockRoomNameAttribute() {
-        return $this->attributes['stock_room_id'] ? StockRoom::find($this->attributes['stock_room_id'])->name : null;
+        return $this->attributes['stock_room_id'] ? ucwords(strtolower(StockRoom::find($this->attributes['stock_room_id'])->name)) : null;
     }
 }

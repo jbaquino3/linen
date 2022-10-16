@@ -26,7 +26,7 @@ class Material extends Model {
         'deleted_by'
     ];
 
-    protected $hidden = [ 'archived_by', 'storage_id', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
+    protected $hidden = [ 'archived_by', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
 
     protected $casts = [
         "stock_number" => "integer",
@@ -56,7 +56,7 @@ class Material extends Model {
 
     public function getStorageNameAttribute($value) {
         $storage = Storage::find($this->attributes['storage_id']);
-        return $this->attributes['storage_id'] ? $storage->name . ", " . $storage->stock_room_name : null;
+        return $this->attributes['storage_id'] ? ucwords(strtolower($storage->stock_room_name . " - " . $storage->name)) : null;
     }
 
     public function getQuantityUsedAttribute() {

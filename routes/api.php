@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StockRoomController;
+use App\Http\Controllers\StorageController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
@@ -48,6 +49,14 @@ Route::group(['prefix' => 'stock_room'], function () {
     Route::post('/', [StockRoomController::class, 'store']);
     Route::put('{id}', [StockRoomController::class, 'update']);
     Route::delete('{id}', [StockRoomController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'storage'], function () {
+    Route::get('/', [StorageController::class, 'index']);
+    Route::get('{id}', [StorageController::class, 'read']);
+    Route::post('/', [StorageController::class, 'store']);
+    Route::put('{id}', [StorageController::class, 'update']);
+    Route::delete('{id}', [StorageController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'material'], function () {

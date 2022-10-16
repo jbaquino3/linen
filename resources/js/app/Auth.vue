@@ -66,15 +66,21 @@
 
 <script>
     import { useAuthStore } from '@/stores/auth'
-    import { ref, computed } from 'vue'
+    import { useStorageStore } from '@/stores/storage'
+    import { ref, computed, onMounted } from 'vue'
     import { useVuetify } from '@/config/UseVuetify'
 
     export default {
         setup() {
             const authStore = useAuthStore()
+            const storageStore = useStorageStore()
             const vuetify = useVuetify()
             const drawer = ref(true)
             const selected_menu = ref(0)
+
+            onMounted(() => {
+                storageStore.fetchStorages()
+            })
 
             const darkMode = computed({
                 get() {
@@ -84,7 +90,7 @@
                     localStorage.setItem('dark', JSON.stringify(v))
                     vuetify.theme.dark = JSON.parse(localStorage.getItem('dark'))
                 },
-            });
+            })
 
             return {
                 authStore, drawer, selected_menu,

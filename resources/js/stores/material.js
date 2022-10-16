@@ -6,6 +6,8 @@ export const useMaterialStore = defineStore('material', () => {
     const materials = ref([])
     const materials_loading = ref(false)
     const materials_error = ref(null)
+    const dialog_loading = ref(false)
+    const dialog_error = ref(null)
     const material_dialog = ref(false)
     const selected_material = ref(null)
 
@@ -22,13 +24,31 @@ export const useMaterialStore = defineStore('material', () => {
         }
         materials_loading.value = false
     }
+
+    async function updateMaterial(data, stock_number) {
+        dialog_error.value = null
+        dialog_loading.value = true
+        const res = await materialApi.update(data, stock_number)
+        if(res.status) {
+            const index = materials.value.findIndex(m => m.stock_number == stock_number)
+            materials.value[index] = data
+            material_dialog.value = false
+            selected_material.value = null
+        } else {
+            dialog_error.value = res.data
+        }
+        dialog_loading.value = false
+    }
   
     return {
         computed_materials,
         materials_loading,
         materials_error,
+        dialog_loading,
+        dialog_error,
         material_dialog,
         selected_material,
-        fetchMaterials
+        fetchMaterials,
+        updateMaterial
     }
 })

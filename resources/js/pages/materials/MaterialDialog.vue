@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-dialog v-model="material_dialog" persistent max-width="800">
-            <v-card>
+            <v-card :loading="dialog_loading">
                 <v-card-title>
                     <v-container class="d-flex" fluid>
                         {{selected_material ? "Update Material" : "Create Material"}}
@@ -15,8 +15,12 @@
 
                 <v-card-text>
                     <v-container fluid>
+                        <v-alert v-if="dialog_error" type="error" text class="mb-2">
+                            {{dialog_error}}
+                        </v-alert>
+
                         <v-row>
-                            <v-col cols="12" sm="6">
+                            <v-col cols="12" sm="4">
                                 <v-select
                                     label="Type"
                                     v-model="material.type"
@@ -24,13 +28,26 @@
                                 ></v-select>
                             </v-col>
 
-                            <v-col cols="12" sm="6">
+                            <v-col cols="12" sm="4">
                                 <v-menu v-model="date_menu" :close-on-content-click="false" min-width="auto">
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-text-field v-model="material.received_at" label="Received Date" readonly v-bind="attrs" v-on="on"></v-text-field>
                                     </template>
                                     <v-date-picker v-model="material.received_at" no-title @input="date_menu = false"></v-date-picker>
                                 </v-menu>
+                            </v-col>
+
+                            <v-col cols="12" sm="4">
+                                <v-radio-group v-model="material.archived" row>
+                                    <v-radio
+                                        label="Available"
+                                        :value="false"
+                                    ></v-radio>
+                                    <v-radio
+                                        label="Archived"
+                                        :value="true"
+                                    ></v-radio>
+                                </v-radio-group>
                             </v-col>
 
                             <v-col cols="12" sm="4">
@@ -57,24 +74,12 @@
                                 ></v-text-field>
                             </v-col>
 
-                            <v-col cols="12" sm="4">
-                                <v-text-field
+                            <v-col cols="12" sm="8">
+                                <v-select
                                     label="Storage"
-                                    v-model="material.storage_name"
-                                ></v-text-field>
-                            </v-col>
-
-                            <v-col cols="12" sm="4">
-                                <v-radio-group v-model="material.archived" row>
-                                    <v-radio
-                                        label="Available"
-                                        :value="false"
-                                    ></v-radio>
-                                    <v-radio
-                                        label="Archived"
-                                        :value="true"
-                                    ></v-radio>
-                                </v-radio-group>
+                                    v-model="material.storage_id"
+                                    :items="storage_select_items"
+                                ></v-select>
                             </v-col>
                             
                             <v-col cols="12" sm="4">
@@ -100,7 +105,7 @@
                             </v-col>
                         </v-row>
 
-                        <v-btn dark color="primary">
+                        <v-btn dark color="primary" @click="save">
                             Save
                         </v-btn>
                     </v-container>
@@ -112,6 +117,7 @@
 
 <script>
     import { useMaterialStore } from '@/stores/material'
+    import { useStorageStore } from '@/stores/storage'
     import { storeToRefs } from 'pinia'
     import { mdiClose } from '@mdi/js'
     import { ref, watch } from 'vue'
@@ -120,12 +126,19 @@
         setup() {
             const materialStore = useMaterialStore()
             const { material_dialog, selected_material } = storeToRefs(materialStore)
+            const { storage_select_items, dialog_loading, dialog_error } = storeToRefs(useStorageStore())
             const material = ref({})
             const date_menu = ref(false)
 
             function closeDialog() {
                 material_dialog.value = false
                 selected_material.value = null
+            }
+
+            function save() {
+                if(selected_material.value) {
+                    materialStore.updateMaterial(material.value, material.value.stock_number)
+                }
             }
 
             watch(selected_material, (currentValue) => {
@@ -136,9 +149,13 @@
             return {
                 material_dialog,
                 material,
+                dialog_loading,
+                dialog_error,
                 selected_material,
                 date_menu,
+                storage_select_items,
                 closeDialog,
+                save,
                 ...icons
             }
         },
