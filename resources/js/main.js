@@ -2,25 +2,20 @@ require('./bootstrap');
 window.Vue = require('vue').default;
 
 import Vue from 'vue';
-import router from "./router";
-import 'vuetify/dist/vuetify.min.css';
-import Vuetify from 'vuetify/lib';
+import router from "@/router"
+import vuetify from '@/vuetify'
+import pinia from '@/stores'
+
 import 'nprogress/nprogress.css';
 import VueTheMask from 'vue-the-mask';
-import { createPinia, PiniaVuePlugin } from 'pinia'
-Vue.use(VueTheMask);
-Vue.use(Vuetify);
-Vue.use(PiniaVuePlugin)
-const pinia = createPinia()
 
+Vue.use(VueTheMask);
 Vue.config.productionTip = false;
 
 // Register components
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
-
 const requireComponent = require.context( './components', true, /[A-Z]\w+\.(vue|js)$/)
-  
 requireComponent.keys().forEach(fileName => {
     const componentConfig = requireComponent(fileName)
     const componentName = upperFirst( camelCase( fileName.split('/').pop().replace(/\.\w+$/, '')))
@@ -30,11 +25,7 @@ requireComponent.keys().forEach(fileName => {
 new Vue({
     el: '#app',
     router,
-    vuetify: new Vuetify({
-        icons: {
-            iconfont: 'mdiSvg',
-        }
-    }),
+    vuetify,
     components: {
         'App': () => import(/* webpackPreload: true */ './App')
     },
