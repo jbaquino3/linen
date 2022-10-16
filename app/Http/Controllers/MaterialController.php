@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Material;
+use Carbon\Carbon;
 
 class MaterialController extends Controller
 {
@@ -20,7 +21,18 @@ class MaterialController extends Controller
     }
 
     public function store(Request $request) {
-        $material = Material::create($request->all());
+        $material = Material::create([
+            "stock_number" => Material::first()->stock_number + 1,
+            "description" => $request->description,
+            "unit" => $request->unit,
+            "unit_cost" => $request->unit_cost,
+            "quantity" => $request->quantity,
+            "type" => $request->type,
+            "archived_at" => $request->archived ? Carbon::now() : null,
+            "archived_by" => $request->archived ? \Auth::id() : null,
+            "storage_id" => $request->storage_id,
+            "received_at" => $request->received_at
+        ]);
 
         return response()->json($material, 201);
     }

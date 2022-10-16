@@ -10,7 +10,7 @@
                         Stock #: {{item.stock_number}}
                         <v-chip dark x-small label class="ml-2" :color="item.type == 'RAW' ? 'blue' : 'red'">{{item.type}}</v-chip>
                         <v-chip dark x-small label class="ml-2" color="green">
-                            ₱{{item.unit_cost}}/{{item.unit}}
+                            ₱{{item.unit_cost}}/{{item.unit.toLowerCase()}}
                         </v-chip>
                         <v-chip dark x-small label class="ml-2" color="orange">
                             <v-icon left x-small>{{mdiDresser}}</v-icon>

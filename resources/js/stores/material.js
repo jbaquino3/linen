@@ -39,6 +39,20 @@ export const useMaterialStore = defineStore('material', () => {
         }
         dialog_loading.value = false
     }
+
+    async function createMaterial(data) {
+        dialog_error.value = null
+        dialog_loading.value = true
+        const res = await materialApi.store(data)
+        if(res.status) {
+            materials.value.unshift(res.data)
+            material_dialog.value = false
+            selected_material.value = null
+        } else {
+            dialog_error.value = res.data
+        }
+        dialog_loading.value = false
+    }
   
     return {
         computed_materials,
@@ -49,6 +63,7 @@ export const useMaterialStore = defineStore('material', () => {
         material_dialog,
         selected_material,
         fetchMaterials,
-        updateMaterial
+        updateMaterial,
+        createMaterial
     }
 })

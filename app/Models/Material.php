@@ -37,6 +37,10 @@ class Material extends Model {
     protected $appends = [ 'archived_by_name', 'storage_name', 'quantity_used' ];
 
     protected static function booted() {
+        static::addGlobalScope('order', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $builder->orderBy('stock_number', 'desc');
+        });
+
         static::creating(function ($model) {
             $model->created_by = "2010743-create";
 

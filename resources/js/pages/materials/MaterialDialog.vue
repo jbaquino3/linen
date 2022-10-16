@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-dialog v-model="material_dialog" persistent max-width="800">
-            <v-card :loading="dialog_loading">
+            <v-card :loading="dialog_loading" :disabled="dialog_loading">
                 <v-card-title>
                     <v-container class="d-flex" fluid>
                         {{selected_material ? "Update Material" : "Create Material"}}
@@ -125,8 +125,8 @@
     export default {
         setup() {
             const materialStore = useMaterialStore()
-            const { material_dialog, selected_material } = storeToRefs(materialStore)
-            const { storage_select_items, dialog_loading, dialog_error } = storeToRefs(useStorageStore())
+            const { material_dialog, selected_material, dialog_loading, dialog_error } = storeToRefs(materialStore)
+            const { storage_select_items } = storeToRefs(useStorageStore())
             const material = ref({})
             const date_menu = ref(false)
 
@@ -138,6 +138,8 @@
             function save() {
                 if(selected_material.value) {
                     materialStore.updateMaterial(material.value, material.value.stock_number)
+                } else {
+                    materialStore.createMaterial(material.value)
                 }
             }
 
