@@ -20,6 +20,14 @@ class Transaction extends Model {
     protected $casts = [ 'is_final' => 'boolean' ];
     protected $hidden = [ 'created_by', 'location_id', 'created_at', 'updated_at', 'deleted_at' ];  
     protected $with = ['items'];
+
+    protected static function booted() {
+        static::creating(function ($model) {
+            $model->created_by = "2010743-create";
+
+            return $model;
+        });
+    }
     
     public function items() {
         return $this->hasMany(TransactionItem::class, 'transaction_id');

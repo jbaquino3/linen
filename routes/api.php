@@ -68,6 +68,10 @@ Route::group(['prefix' => 'product'], function () {
 
 Route::group(['prefix' => 'transaction'], function () {
     Route::get('/', [TransactionController::class, 'index']);
+    Route::get('{id}', [MaterialController::class, 'read']);
+    Route::post('/', [MaterialController::class, 'store']);
+    Route::put('{id}', [MaterialController::class, 'update']);
+    Route::delete('{id}', [MaterialController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'request'], function () {
