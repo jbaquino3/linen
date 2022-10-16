@@ -10,7 +10,6 @@ class Material extends Model {
 
     protected $primaryKey = 'stock_number';
     public $incrementing = false;
-    public $timestamps = false;
 
     protected $fillable = [
         'stock_number',
@@ -22,10 +21,13 @@ class Material extends Model {
         'archived_at',
         'archived_by',
         'storage_id',
-        'received_at'
+        'received_at',
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
-    protected $hidden = [ 'archived_by', 'storage_id' ];
+    protected $hidden = [ 'archived_by', 'storage_id', 'created_by', 'updated_by', 'deleted_by' ];
 
     protected function archived_by_name(): Attribute {
         return Attribute::make(

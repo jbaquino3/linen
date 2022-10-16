@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Request extends Model {
     use HasUlids, SoftDeletes;
-    
-    public $timestamps = false;
 
     protected $fillable = [
         'name',
@@ -25,7 +23,8 @@ class Request extends Model {
         'processed_at',
         'prepared_at',
         'issued_at',
-        'cancelled_at'
+        'cancelled_at',
+        'deleted_by'
     ];
 
     protected $hidden = [
@@ -35,6 +34,7 @@ class Request extends Model {
         'prepared_by',
         'issued_by',
         'cancelled_by',
+        'deleted_by',
         'deleted_at'
     ];
 

@@ -14,29 +14,24 @@ return new class extends Migration
 
     public function up()
     {
-        Schema::create($this->schema . "." . "user_activities", function (Blueprint $table) {
-            $table->ulid('id')->primary();
-            $table->string("table_name");
-            $table->json("row_id");
-            $table->enum('type', ['CREATE', 'UPDATE', 'DELETE']);
-            $table->string('user_id');
-            $table->longText("query");
-            $table->datetime('timestamp');
-
-            $table->index('table_name', 'row_id');
-            $table->index('user_id');
-        });
-        
         Schema::create($this->schema . "." . "locations", function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string("name");
             $table->enum('type', ['WARD', 'OFFICE']);
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->string('deleted_by')->nullable();
+            $table->timestamps();
             $table->softDeletes();
         });
         
         Schema::create($this->schema . "." . "stock_rooms", function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string("name");
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->string('deleted_by')->nullable();
+            $table->timestamps();
             $table->softDeletes();
         });
 
@@ -44,6 +39,10 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->ulid('stock_room_id');
             $table->string("name");
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->string('deleted_by')->nullable();
+            $table->timestamps();
             $table->softDeletes();
             
             $table->index('stock_room_id');
@@ -60,6 +59,10 @@ return new class extends Migration
             $table->string("archived_by")->nullable();
             $table->ulid('storage_id')->nullable();
             $table->datetime("received_at");
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->string('deleted_by')->nullable();
+            $table->timestamps();
             $table->softDeletes();
             
             $table->index('archived_by');
@@ -76,6 +79,10 @@ return new class extends Migration
             $table->enum('unit', ['PIECE', 'SPOOL', 'YARD', 'ROLL', 'SACK/BAG']);
             $table->decimal('unit_cost', 8, 2)->default(0);
             $table->decimal('quantity', 8, 2)->default(0);
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->string('deleted_by')->nullable();
+            $table->timestamps();
             $table->softDeletes();
             
             $table->index('material_stock_number');
@@ -88,6 +95,8 @@ return new class extends Migration
             $table->enum('type', ['ISSUANCE', 'CONDEMN', 'RETURN', 'LOST']);
             $table->date('transaction_date');
             $table->boolean('is_final')->default(false);
+            $table->string('created_by')->nullable();
+            $table->timestamps();
             $table->softDeletes();
             
             $table->index('location_id');
@@ -99,6 +108,7 @@ return new class extends Migration
             $table->string('product_bulk_id');
             $table->json('stock_numbers')->default("[]");
             $table->decimal('issuance_additional_cost', 8, 2)->default(0);
+            $table->timestamps();
             $table->softDeletes();
             
             $table->index('transaction_id');
@@ -121,6 +131,8 @@ return new class extends Migration
             $table->datetime('prepared_at')->nullable();
             $table->datetime('issued_at')->nullable();
             $table->datetime('cancelled_at')->nullable();
+            $table->string('deleted_by')->nullable();
+            $table->timestamps();
             $table->softDeletes();
             
             $table->index('transaction_id');
@@ -136,6 +148,7 @@ return new class extends Migration
             $table->string('remarks');
             $table->string('remarks_by');
             $table->ulid('request_id');
+            $table->timestamps();
             $table->softDeletes();
             
             $table->index('remarks_by');

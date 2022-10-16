@@ -9,17 +9,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Transaction extends Model {
     use HasUlids, SoftDeletes;
 
-    public $timestamps = false;
-
     protected $fillable = [
-        'location_id', 'type', 'is_final', 'transaction_date'
+        'location_id',
+        'type',
+        'is_final',
+        'transaction_date',
+        'created_by'
     ];
 
-    protected $casts = [
-        'is_final' => 'boolean',
-    ];
-
-    protected $hidden = ['location_id'];
+    protected $casts = [ 'is_final' => 'boolean' ];
+    protected $hidden = [ 'created_by', 'location_id' ];  
     protected $with = ['items'];
     
     public function items() {

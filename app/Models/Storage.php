@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Storage extends Model {
     use HasUlids, SoftDeletes;
 
-    public $timestamps = false;
-
     protected $fillable = [
-        'stock_room_id', 'name'
+        'stock_room_id',
+        'name',
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
-    protected $hidden = ['stock_room_id'];
+    protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'stock_room_id' ]; 
     
     public function materials() {
         return $this->hasMany(Material::class, 'storage_id');

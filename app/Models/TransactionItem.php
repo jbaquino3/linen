@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TransactionItem extends Model {
     use HasUlids, SoftDeletes;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'transaction_id',
         'product_bulk_id',
@@ -18,7 +16,6 @@ class TransactionItem extends Model {
         'issuance_additional_cost'
     ];
     protected $appends = ['stock_numbers'];
-    
     public function getStockNumbersAttribute($value) {
         return json_decode($value, true);
     }

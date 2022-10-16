@@ -11,7 +11,6 @@ class Product extends Model {
     protected $primaryKey = 'bulk_id';
     protected $keyType = 'string';
     public $incrementing = false;
-    public $timestamps = false;
 
     protected $fillable = [
         'bulk_id',
@@ -22,10 +21,13 @@ class Product extends Model {
         'name',
         'unit',
         'unit_cost',
-        'quantity'
+        'quantity',
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
-    protected $hidden = [ 'material_stock_number', 'storage_id' ];
+    protected $hidden = [ 'material_stock_number', 'storage_id', 'created_by', 'updated_by', 'deleted_by' ];
     protected $appends = ['stock_numbers'];
 
     protected function material_name(): Attribute {
