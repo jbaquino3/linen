@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import { useVuetify } from '@/vuetify/UseVuetify'
+    import { useVuetify } from '@/config/UseVuetify'
     import { onMounted } from 'vue'
 
     export default {

@@ -1,26 +1,18 @@
 require('./bootstrap');
 window.Vue = require('vue').default;
 
-import Vue from 'vue';
+import Vue from 'vue'
 import router from "@/router"
-import vuetify from '@/vuetify'
-import pinia from '@/stores'
+import vuetify from '@/config/vuetify'
+import pinia from '@/config/pinia'
+import * as components from '@/config/components'
 
-import 'nprogress/nprogress.css';
-import VueTheMask from 'vue-the-mask';
+import 'nprogress/nprogress.css'
+import VueTheMask from 'vue-the-mask'
 
 Vue.use(VueTheMask);
 Vue.config.productionTip = false;
-
-// Register components
-import upperFirst from 'lodash/upperFirst'
-import camelCase from 'lodash/camelCase'
-const requireComponent = require.context( './components', true, /[A-Z]\w+\.(vue|js)$/)
-requireComponent.keys().forEach(fileName => {
-    const componentConfig = requireComponent(fileName)
-    const componentName = upperFirst( camelCase( fileName.split('/').pop().replace(/\.\w+$/, '')))
-    Vue.component( componentName, componentConfig.default )
-})
+components.register();
 
 new Vue({
     el: '#app',

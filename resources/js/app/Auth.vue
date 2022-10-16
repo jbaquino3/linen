@@ -67,7 +67,7 @@
 <script>
     import { useAuthStore } from '@/stores/auth'
     import { ref, computed } from 'vue'
-    import { useVuetify } from '@/vuetify/UseVuetify'
+    import { useVuetify } from '@/config/UseVuetify'
 
     export default {
         setup() {
