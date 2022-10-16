@@ -39,6 +39,14 @@ class Request extends Model {
     ];
 
     protected $with = ['transaction', 'remarks'];
+    protected $casts = [
+        "quantity" => "float",
+        "requested_at" => "datetime:Y-m-d H:i:s",
+        "processed_at" => "datetime:Y-m-d H:i:s",
+        "prepared_at" => "datetime:Y-m-d H:i:s",
+        "issued_at" => "datetime:Y-m-d H:i:s",
+        "cancelled_at" => "datetime:Y-m-d H:i:s",
+    ];
 
     public function transaction() {
         return $this->belongsTo(Transaction::class, 'transaction_id');
