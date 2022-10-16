@@ -1,7 +1,7 @@
 <template>
     <div>
         <template>
-            <v-app :style="$vuetify.theme.dark? 'background: #212121' : 'background: #e8e8e8'">
+            <v-app :style="vuetify.theme.dark? 'background: #212121' : 'background: #e8e8e8'">
                 <v-main app>
                     <LandingPage></LandingPage>
                 </v-main>
@@ -11,14 +11,19 @@
 </template>
 
 <script>
-    import { useAuthStore } from '@/stores/auth'
+    import { useVuetify } from '@/vuetify/UseVuetify'
+    import { onMounted } from 'vue'
 
     export default {
         setup() {
-            const authStore = useAuthStore()
+            const vuetify = useVuetify()
+
+            onMounted(() => {
+                vuetify.theme.dark = JSON.parse(localStorage.getItem('dark'))
+            })
 
             return {
-                authStore
+                vuetify
             }
         },
 
