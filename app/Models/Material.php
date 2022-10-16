@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Material extends Model {
@@ -35,6 +34,8 @@ class Material extends Model {
         "quantity" => "float"
     ];
 
+    protected $appends = [ 'archived_by_name', 'storage_name' ];
+
     protected static function booted() {
         static::creating(function ($model) {
             $model->created_by = "2010743-create";
@@ -48,16 +49,12 @@ class Material extends Model {
             return $model;
         });
     }
-    
-    protected function archived_by_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['archived_by'] ? User::find($attributes['archived_by'])->name : null
-        );
+
+    public function getArchivedByNameAttribute($value) {
+        return $this->attributes['archived_by'] ? User::find($this->attributes['archived_by'])->name : null;
     }
 
-    protected function storage_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['storage_id'] ? Storage::find($attributes['storage_id'])->name : null
-        );
+    public function getStorageNameAttribute($value) {
+        return $this->attributes['storage_id'] ? Storage::find($this->attributes['storage_id'])->name : null;
     }
 }

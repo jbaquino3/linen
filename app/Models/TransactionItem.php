@@ -22,7 +22,7 @@ class TransactionItem extends Model {
     ];
 
     public function getStockNumbersAttribute($value) {
-        return json_decode($value, true);
+        return json_decode($this->attributes["stock_numbers"], true);
     }
 
     public function setStockNumbersAttribute($value) {

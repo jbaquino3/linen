@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model {
@@ -41,24 +40,21 @@ class Product extends Model {
         });
     }
 
-    protected $hidden = [ 'material_stock_number', 'storage_id', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
-    protected $appends = ['stock_numbers'];
+    protected $hidden = [  'material_stock_number', 'storage_id', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
+    protected $appends = ['stock_numbers', 'material_name', 'storage_name'];
     protected $casts = [
         "material_quantity" => "float",
         "unit_cost" => "float",
-        "quantity" => "float"
+        "quantity" => "float",
+        "material_stock_number" => "integer"
     ];
 
-    protected function material_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['material_stock_number'] ? Material::find($attributes['material_stock_number'])->name : null
-        );
+    public function getMaterialNameAttribute($value) {
+        return $this->attributes['material_stock_number'] ? Material::find($this->attributes['material_stock_number'])->description : 'what';
     }
 
-    protected function storage_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['storage_id'] ? Storage::find($attributes['storage_id'])->name : null
-        );
+    public function getStorageNameAttribute($value) {
+        return $this->attributes['storage_id'] ? Storage::find($this->attributes['storage_id'])->name : null;
     }
 
     public function getStockNumbersAttribute($value) {

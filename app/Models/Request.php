@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Request extends Model {
@@ -48,6 +47,8 @@ class Request extends Model {
         "cancelled_at" => "datetime:Y-m-d H:i:s",
     ];
 
+    protected $appends = [ 'requested_by_name', 'processed_by_name', 'prepared_by_name', 'issued_by_name', 'cancelled_by_name' ];
+
     public function transaction() {
         return $this->belongsTo(Transaction::class, 'transaction_id');
     }
@@ -55,34 +56,24 @@ class Request extends Model {
     public function remarks() {
         return $this->hasMany(RequestRemark::class, 'request_id');
     }
-    
-    protected function requested_by_by_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['requested_by'] ? User::find($attributes['requested_by'])->name : null
-        );
+
+    public function getRequestedByNameAttribute($value) {
+        return $this->attributes['requested_by'] ? User::find($this->attributes['requested_by'])->name : null;
     }
-    
-    protected function processed_by_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['processed_by'] ? User::find($attributes['processed_by'])->name : null
-        );
+
+    public function getProcessedByNameAttribute($value) {
+        return $this->attributes['processed_by'] ? User::find($this->attributes['processed_by'])->name : null;
     }
-    
-    protected function prepared_by_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['prepared_by'] ? User::find($attributes['prepared_by'])->name : null
-        );
+
+    public function getPreparedByNameAttribute($value) {
+        return $this->attributes['prepared_by'] ? User::find($this->attributes['prepared_by'])->name : null;
     }
-    
-    protected function issued_by_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['issued_by'] ? User::find($attributes['issued_by'])->name : null
-        );
+
+    public function getIssuedByNameAttribute($value) {
+        return $this->attributes['issued_by'] ? User::find($this->attributes['issued_by'])->name : null;
     }
-    
-    protected function cancelled_by_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['cancelled_by'] ? User::find($attributes['cancelled_by'])->name : null
-        );
+
+    public function getCancelledByNameAttribute($value) {
+        return $this->attributes['cancelled_by'] ? User::find($this->attributes['cancelled_by'])->name : null;
     }
 }

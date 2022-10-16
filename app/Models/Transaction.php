@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model {
@@ -20,6 +19,7 @@ class Transaction extends Model {
     protected $casts = [ 'is_final' => 'boolean' ];
     protected $hidden = [ 'created_by', 'location_id', 'created_at', 'updated_at', 'deleted_at' ];  
     protected $with = ['items'];
+    protected $appends = [ 'location_name' ];
 
     protected static function booted() {
         static::creating(function ($model) {
@@ -33,9 +33,13 @@ class Transaction extends Model {
         return $this->hasMany(TransactionItem::class, 'transaction_id');
     }
 
-    protected function location_name(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => $attributes['location_id'] ? Location::find($attributes['location_id'])->name : null
-        );
+    public function getLocationNameAttribute($value) {
+        if($this->attributes['location_id']) {
+            $location = Location::find($this->attributes['location_id']);
+
+            return $location->name . " (" . $location->type . ")";
+        } else {
+            return null;
+        }
     }
 }

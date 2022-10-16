@@ -19,7 +19,7 @@ class MaterialSeeder extends Seeder
     public function run()
     {
         Material::truncate();
-        $materials = \DB::table("nora.paul.linen_raw_materials")->whereNull("deleted_at")->get();
+        $materials = \DB::table("nora.paul.linen_raw_materials")->get();
 
         foreach($materials as $material) {
             $stock_room = \DB::table("nora.paul.linen_stock_rooms")
