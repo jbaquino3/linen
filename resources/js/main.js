@@ -25,12 +25,12 @@ new Vue({
 });
 
 axios.interceptors.request.use(request => {
-    request.withCredentials = true;
+    // request.withCredentials = true;
 
-    // Update token axios header
-    if (store.getters['auth/TOKEN']) {
-      request.headers.common['Authorization'] = 'Bearer ' + store.getters['auth/TOKEN'];
-    }
+    // // Update token axios header
+    // if (store.getters['auth/TOKEN']) {
+    //   request.headers.common['Authorization'] = 'Bearer ' + store.getters['auth/TOKEN'];
+    // }
 
     return request;
 })

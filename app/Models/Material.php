@@ -34,7 +34,7 @@ class Material extends Model {
         "quantity" => "float"
     ];
 
-    protected $appends = [ 'archived_by_name', 'storage_name', 'quantity_available' ];
+    protected $appends = [ 'archived_by_name', 'storage_name', 'quantity_used' ];
 
     protected static function booted() {
         static::creating(function ($model) {
@@ -60,10 +60,16 @@ class Material extends Model {
     }
 
     public function getQuantityUsedAttribute() {
-        return floatval(Product::where("material_stock_number", $this->attributes['stock_number'])->sum('material_quantity'));
+        $value = strval(Product::where("material_stock_number", $this->attributes['stock_number'])->sum('material_quantity'));
+        $value = ((int) strpos(strrev($value), ".")) > 2 ? round($value, 2) : $value;
+
+        return floatval($value);
     }
 
     public function getQuantityAvailableAttribute() {
-        return floatval($this->attributes['quantity'] - $this->getQuantityUsedAttribute());
+        $value = strval($this->attributes['quantity'] - $this->getQuantityUsedAttribute());
+        $value = ((int) strpos(strrev($value), ".")) > 2 ? round($value, 2) : $value;
+
+        return floatval($value);
     }
 }
