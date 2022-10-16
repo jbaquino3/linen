@@ -53,6 +53,19 @@ export const useMaterialStore = defineStore('material', () => {
         }
         dialog_loading.value = false
     }
+
+    async function deleteMaterial(stock_number) {
+        materials_error.value = null
+        materials_loading.value = true
+        const res = await materialApi.destroy(stock_number)
+        if(res.status) {
+            const index = materials.value.findIndex(m => m.stock_number == stock_number)
+            materials.value.splice(index, 1)
+        } else {
+            materials_error.value = res.data
+        }
+        materials_loading.value = false
+    }
   
     return {
         computed_materials,
@@ -64,6 +77,7 @@ export const useMaterialStore = defineStore('material', () => {
         selected_material,
         fetchMaterials,
         updateMaterial,
-        createMaterial
+        createMaterial,
+        deleteMaterial
     }
 })

@@ -1,6 +1,10 @@
 <template>
     <div>
-        <v-data-table :headers="headers" :items="computed_materials" :search="search" :loading="materials_loading">
+        <v-alert v-if="materials_error" type="error" text class="mb-2">
+            {{materials_error}}
+        </v-alert>
+        
+        <v-data-table :headers="headers" :items="computed_materials" :search="search" :disabled="materials_loading" :loading="materials_loading">
             <template v-slot:[`item.description`]="{ item }">
                 <div class="d-flex flex-column">
                     <div :class="($vuetify.theme.dark ? 'yellow--text' : ' font-weight-medium')">
@@ -31,7 +35,14 @@
             </template>
 
             <template v-slot:[`item.actions`]="{ item }">
-                <table-edit-button @click="openEdit(item)"></table-edit-button>
+                <div class="d-flex">
+                    <div class="mr-1">
+                        <table-edit-button @click="openEdit(item)"></table-edit-button>
+                    </div>
+                    <div class="mr-1">
+                        <table-delete-button @delete="destroy(item)"></table-delete-button>
+                    </div>
+                </div>
             </template>
         </v-data-table>
     </div>
@@ -50,6 +61,7 @@
                 computed_materials,
                 materials_loading,
                 material_dialog,
+                materials_error,
                 selected_material
             } = storeToRefs(materialStore)
             const search = ref("")
@@ -63,12 +75,18 @@
                 material_dialog.value = true
             }
 
+            function destroy(item) {
+                materialStore.deleteMaterial(item.stock_number)
+            }
+
             return {
                 computed_materials,
                 materials_loading,
+                materials_error,
                 headers,
                 search,
                 openEdit,
+                destroy,
                 ...icons
             }
         },
