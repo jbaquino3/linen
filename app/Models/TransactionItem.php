@@ -16,6 +16,8 @@ class TransactionItem extends Model {
         'issuance_additional_cost'
     ];
     protected $appends = ['stock_numbers'];
+    protected $hidden = [ 'created_at', 'updated_at', 'deleted_at' ];
+
     public function getStockNumbersAttribute($value) {
         return json_decode($value, true);
     }

@@ -15,7 +15,7 @@ class RequestRemark extends Model {
         'request_id'
     ];
 
-    protected $hidden = [ 'remarks_by', 'request_id' ]; 
+    protected $hidden = [ 'remarks_by', 'request_id', 'created_at', 'updated_at', 'deleted_at' ]; 
     
     protected function remarks_by_name(): Attribute {
         return Attribute::make(

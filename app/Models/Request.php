@@ -35,7 +35,7 @@ class Request extends Model {
         'issued_by',
         'cancelled_by',
         'deleted_by',
-        'deleted_at'
+        'deleted_at', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     protected $with = ['transaction', 'remarks'];

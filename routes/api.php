@@ -44,6 +44,10 @@ Route::group(['prefix' => 'user'], function () {
 
 Route::group(['prefix' => 'stock_room'], function () {
     Route::get('/', [StockRoomController::class, 'index']);
+    Route::get('{id}', [StockRoomController::class, 'read']);
+    Route::post('/', [StockRoomController::class, 'store']);
+    Route::put('{id}', [StockRoomController::class, 'update']);
+    Route::delete('{id}', [StockRoomController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'material'], function () {

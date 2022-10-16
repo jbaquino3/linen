@@ -28,7 +28,7 @@ class User extends Authenticatable
         'role'
     ];
 
-    protected $hidden = [ 'password', 'remember_token', 'location_id' ];
+    protected $hidden = [ 'password', 'remember_token', 'location_id', 'created_at', 'updated_at', 'deleted_at' ];
     protected $casts = [ 'email_verified_at' => 'datetime' ];
 
     public function getIncrementing() {

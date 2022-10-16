@@ -16,19 +16,19 @@ class Location extends Model {
         'deleted_by'
     ];
 
-    protected $hidden = [ 'deleted_at', 'created_by', 'updated_by', 'deleted_by' ];
+    protected $hidden = [ 'deleted_at', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
 
     protected static function booted() {
-        static::creating(function ($location) {
-            $location->created_by = "2010743-create";
+        static::creating(function ($model) {
+            $model->created_by = "2010743-create";
 
-            return $location;
+            return $model;
         });
 
-        static::updating(function ($location) {
-            $location->updated_by = "2010743-update";
+        static::updating(function ($model) {
+            $model->updated_by = "2010743-update";
 
-            return $location;
+            return $model;
         });
     }
 }

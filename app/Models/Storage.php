@@ -16,7 +16,7 @@ class Storage extends Model {
         'deleted_by'
     ];
 
-    protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'stock_room_id' ]; 
+    protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'stock_room_id', 'created_at', 'updated_at', 'deleted_at' ]; 
     
     public function materials() {
         return $this->hasMany(Material::class, 'storage_id');

@@ -27,7 +27,7 @@ class Product extends Model {
         'deleted_by'
     ];
 
-    protected $hidden = [ 'material_stock_number', 'storage_id', 'created_by', 'updated_by', 'deleted_by' ];
+    protected $hidden = [ 'material_stock_number', 'storage_id', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
     protected $appends = ['stock_numbers'];
 
     protected function material_name(): Attribute {
