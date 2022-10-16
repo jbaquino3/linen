@@ -34,7 +34,7 @@ class Material extends Model {
         "quantity" => "float"
     ];
 
-    protected $appends = [ 'archived_by_name', 'storage_name' ];
+    protected $appends = [ 'archived_by_name', 'storage_name', 'quantity_available' ];
 
     protected static function booted() {
         static::creating(function ($model) {
@@ -50,11 +50,20 @@ class Material extends Model {
         });
     }
 
-    public function getArchivedByNameAttribute($value) {
+    public function getArchivedByNameAttribute() {
         return $this->attributes['archived_by'] ? User::find($this->attributes['archived_by'])->name : null;
     }
 
     public function getStorageNameAttribute($value) {
-        return $this->attributes['storage_id'] ? Storage::find($this->attributes['storage_id'])->name : null;
+        $storage = Storage::find($this->attributes['storage_id']);
+        return $this->attributes['storage_id'] ? $storage->name . ", " . $storage->stock_room_name : null;
+    }
+
+    public function getQuantityUsedAttribute() {
+        return floatval(Product::where("material_stock_number", $this->attributes['stock_number'])->sum('material_quantity'));
+    }
+
+    public function getQuantityAvailableAttribute() {
+        return floatval($this->attributes['quantity'] - $this->getQuantityUsedAttribute());
     }
 }

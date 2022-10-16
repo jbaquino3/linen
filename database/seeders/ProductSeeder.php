@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\StockRoom;
 use App\Models\Storage;
+use App\Models\Material;
 
 class ProductSeeder extends Seeder
 {
@@ -57,6 +58,11 @@ class ProductSeeder extends Seeder
                 "unit_cost" => $product->product_unit_cost / (1 + ($product->issuance_additional_cost/100)),
                 "quantity" => $product->product_quantity
             ]);
+
+            // Update material quantity
+            $material = Material::find($created_product->material_stock_number);
+            $material->quantity = $material->quantity + $created_product->material_quantity;
+            $material->saveQuietly();
         }
     }
 }

@@ -18,7 +18,13 @@ class Storage extends Model {
 
     protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'stock_room_id', 'created_at', 'updated_at', 'deleted_at' ]; 
     
+    protected $appends = [ 'stock_room_name' ];
+    
     public function materials() {
         return $this->hasMany(Material::class, 'storage_id');
+    }
+
+    public function getStockRoomNameAttribute() {
+        return $this->attributes['stock_room_id'] ? StockRoom::find($this->attributes['stock_room_id'])->name : null;
     }
 }

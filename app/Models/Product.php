@@ -41,7 +41,7 @@ class Product extends Model {
     }
 
     protected $hidden = [  'material_stock_number', 'storage_id', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
-    protected $appends = ['stock_numbers', 'material_name', 'storage_name'];
+    protected $appends = ['stock_numbers', 'material_name', 'storage_name', 'quantity_available'];
     protected $casts = [
         "material_quantity" => "float",
         "unit_cost" => "float",
@@ -54,7 +54,8 @@ class Product extends Model {
     }
 
     public function getStorageNameAttribute($value) {
-        return $this->attributes['storage_id'] ? Storage::find($this->attributes['storage_id'])->name : null;
+        $storage = Storage::find($this->attributes['storage_id']);
+        return $this->attributes['storage_id'] ? $storage->name . ", " . $storage->stock_room_name : null;
     }
 
     public function getStockNumbersAttribute($value) {
@@ -63,5 +64,18 @@ class Product extends Model {
 
     public function setStockNumbersAttribute($value) {
         $this->attributes["stock_numbers"] = json_encode($value);
+    }
+
+    public function getQuantityIssuedAttribute() {
+        $trans_items = TransactionItem::where("product_bulk_id", $this->attributes['bulk_id'])->get();
+        $sum = 0;
+        foreach($trans_items as $item) {
+            $sum += $item->quantity;
+        }
+        return $sum;
+    }
+
+    public function getQuantityAvailableAttribute() {
+        return floatval($this->attributes['quantity'] - $this->getQuantityIssuedAttribute());
     }
 }
