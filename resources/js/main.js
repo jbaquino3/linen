@@ -7,8 +7,11 @@ import 'vuetify/dist/vuetify.min.css';
 import Vuetify from 'vuetify/lib';
 import 'nprogress/nprogress.css';
 import VueTheMask from 'vue-the-mask';
+import { createPinia, PiniaVuePlugin } from 'pinia'
 Vue.use(VueTheMask);
 Vue.use(Vuetify);
+Vue.use(PiniaVuePlugin)
+const pinia = createPinia()
 
 Vue.config.productionTip = false;
 
@@ -34,7 +37,8 @@ new Vue({
     }),
     components: {
         'App': () => import(/* webpackPreload: true */ './App')
-    }
+    },
+    pinia
 });
 
 axios.interceptors.request.use(request => {
