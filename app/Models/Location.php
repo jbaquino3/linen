@@ -35,4 +35,10 @@ class Location extends Model {
             return $model;
         });
     }
+
+    protected $appends = [ 'transaction_count' ];
+
+    public function getTransactionCountAttribute() {
+        return Transaction::where('location_id', $this->attributes['id'])->count();
+    }
 }

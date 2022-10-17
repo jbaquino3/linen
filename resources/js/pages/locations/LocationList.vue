@@ -21,7 +21,7 @@
                         <table-edit-button @click="openEdit(item)"></table-edit-button>
                     </div>
                     <div class="mr-1">
-                        <table-delete-button @delete="destroy(item)"></table-delete-button>
+                        <table-delete-button :disabled="item.transaction_count > 0" @delete="destroy(item)"></table-delete-button>
                     </div>
                 </div>
             </template>

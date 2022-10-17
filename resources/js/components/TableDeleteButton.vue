@@ -1,7 +1,7 @@
 <template>
         <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs" v-on="on" small elevation="0" color="red" dark @click="del">
+                <v-btn v-bind="attrs" v-on="on" small elevation="0" color="red" :dark="!disabled" :disabled="disabled" @click="del">
                     <v-icon>
                         {{mdiDelete}}
                     </v-icon>
@@ -35,6 +35,8 @@
                 ...icons
             }
         },
+
+        props: ['disabled']
     }
 
     const icons = {
