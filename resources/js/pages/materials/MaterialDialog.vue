@@ -84,7 +84,7 @@
                             
                             <v-col cols="12" sm="4">
                                 <div class="d-flex flex-column">
-                                    <div class="caption">Used: {{material.quantity_used ? material.quantity_used : 0}}</div>
+                                    <div class="caption">Available</div>
 
                                     <available-bar
                                         :disabled="!!material.archived"
@@ -120,7 +120,7 @@
     import { useStorageStore } from '@/stores/storage'
     import { storeToRefs } from 'pinia'
     import { mdiClose } from '@mdi/js'
-    import { ref, watch } from 'vue'
+    import { ref, watch, onMounted } from 'vue'
 
     export default {
         setup() {
@@ -136,6 +136,8 @@
             }
 
             function save() {
+                material.value.archived_at = material.value.archived ? new Date().toISOString() : null
+
                 if(selected_material.value) {
                     materialStore.updateMaterial(material.value, material.value.stock_number)
                 } else {
@@ -143,9 +145,17 @@
                 }
             }
 
-            watch(selected_material, (currentValue) => {
-                material.value = currentValue ? currentValue : {}
+            function assignMaterial() {
+                material.value = selected_material.value ? selected_material.value : {}
                 material.value.archived = !!material.value.archived_at
+            }
+
+            onMounted(() => {
+                assignMaterial()
+            })
+
+            watch(selected_material, (currentValue) => {
+                assignMaterial()
             })
 
             return {

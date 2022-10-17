@@ -7,4 +7,4 @@ export const useAuthStore = defineStore('auth', () => {
     })
   
     return { user }
-})
+}, { persist: true })

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import * as materialApi from '@/api/material'
 
 export const useMaterialStore = defineStore('material', () => {
@@ -12,6 +12,13 @@ export const useMaterialStore = defineStore('material', () => {
     const selected_material = ref(null)
 
     const computed_materials = computed(() => materials.value)
+
+    onMounted(() => {
+        materials_loading.value = false
+        materials_error.value = null
+        dialog_loading.value = false
+        dialog_error.value = null
+    })
 
     async function fetchMaterials() {
         materials_error.value = null
@@ -34,6 +41,7 @@ export const useMaterialStore = defineStore('material', () => {
             materials.value[index] = data
             material_dialog.value = false
             selected_material.value = null
+            materials.value = [...materials.value]
         } else {
             dialog_error.value = res.data
         }
@@ -80,4 +88,4 @@ export const useMaterialStore = defineStore('material', () => {
         createMaterial,
         deleteMaterial
     }
-})
+}, { persist: true })

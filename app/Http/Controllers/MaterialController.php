@@ -40,6 +40,9 @@ class MaterialController extends Controller
     public function update(Request $request, $id) {
         $material = Material::find($id);
         $updated = $material->update($request->all());
+        $material->archived_at = $request->archived ? Carbon::now() : null;
+        $material->archived_by = $request->archived ? \Auth::id() : null;
+        $material->save();
 
         return response()->json($updated);
     }
