@@ -19,6 +19,10 @@ class Location extends Model {
     protected $hidden = [ 'deleted_at', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
 
     protected static function booted() {
+        static::addGlobalScope('order', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $builder->orderBy('name', 'asc');
+        });
+
         static::creating(function ($model) {
             $model->created_by = "2010743-create";
 
