@@ -34,7 +34,7 @@ class MaterialController extends Controller
             "received_at" => $request->received_at
         ]);
 
-        return response()->json($material, 201);
+        return response()->json($material->fresh(), 201);
     }
 
     public function update(Request $request, $id) {
@@ -44,7 +44,7 @@ class MaterialController extends Controller
         $material->archived_by = $request->archived ? \Auth::id() : null;
         $material->save();
 
-        return response()->json($material);
+        return response()->json($material->fresh());
     }
 
     public function delete(Request $request, $id) {

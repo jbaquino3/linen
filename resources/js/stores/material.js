@@ -25,15 +25,15 @@ export const useMaterialStore = defineStore('material', () => {
         })
 
         filtered.forEach(stg => {
-            items.push({
+            items.push(Object.assign({}, {
                 text: "#" + stg.stock_number + " " + stg.description,
                 value: stg.stock_number,
                 unit: stg.unit,
-                available: stg.quantity - stg.quantity_used + (
+                available: stg.quantity - stg.quantity_used + parseFloat(
                     productStore.selected_product && stg.stock_number == productStore.selected_product.material_stock_number ?
                     productStore.selected_product.material_quantity : 0
                 )
-            })
+            }))
         })
         return items
     })

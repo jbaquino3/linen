@@ -146,7 +146,7 @@
             }
 
             function assignMaterial() {
-                material.value = selected_material.value ? selected_material.value : {}
+                material.value = selected_material.value ? Object.assign({}, selected_material.value) : {}
                 material.value.archived = !!material.value.archived_at
             }
 

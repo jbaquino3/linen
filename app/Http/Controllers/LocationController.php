@@ -22,14 +22,14 @@ class LocationController extends Controller
     public function store(Request $request) {
         $location = Location::create($request->all());
 
-        return response()->json($location, 201);
+        return response()->json($location->fresh(), 201);
     }
 
     public function update(Request $request, $id) {
         $location = Location::find($id);
         $updated = $location->update($request->all());
 
-        return response()->json($location);
+        return response()->json($location->fresh());
     }
 
     public function delete(Request $request, $id) {

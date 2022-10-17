@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+
 
 class Product extends Model {
-    use SoftDeletes;
+    use SoftDeletes, HasUlids;
 
     protected $primaryKey = 'bulk_id';
-    protected $keyType = 'string';
-    public $incrementing = false;
 
     protected $fillable = [
         'bulk_id',

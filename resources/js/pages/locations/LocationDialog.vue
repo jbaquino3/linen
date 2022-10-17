@@ -73,7 +73,7 @@
             }
 
             function assignLocation() {
-                location.value = selected_location.value ? selected_location.value : {}
+                location.value = selected_location.value ? Object.assign({}, selected_location.value) : {}
             }
 
             onMounted(() => {

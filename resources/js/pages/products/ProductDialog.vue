@@ -132,7 +132,7 @@
             const material_available = computed(() => {
                 const material = material_select_items.value.find(i => i.value == product.value.material_stock_number)
 
-                return material ? material.available : ''
+                return material ? parseFloat(material.available) - parseFloat(product.value.material_quantity.length > 0 ? product.value.material_quantity : 0) : ''
             })
 
             const material_stock_number = computed(() => {
@@ -159,10 +159,11 @@
             }
 
             function assignProduct() {
-                product.value = selected_product.value ? selected_product.value : {
+                product.value = selected_product.value ? Object.assign({}, selected_product.value) : {
                     create_date: new Date().toISOString().substring(0,10),
                     stock_numbers: [],
-                    quantity: ""
+                    quantity: "",
+                    material_quantity: 0
                 }
                 stock_numbers.value = helper.integerArrayToRanges(product.value.stock_numbers)
                 product.value.starting_stock_number = product.value.stock_numbers.length > 0 ? product.value.stock_numbers[0] : 1
