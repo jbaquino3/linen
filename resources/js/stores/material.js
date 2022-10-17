@@ -67,7 +67,7 @@ export const useMaterialStore = defineStore('material', () => {
         const res = await materialApi.update(data, stock_number)
         if(res.status) {
             const index = materials.value.findIndex(m => m.stock_number == stock_number)
-            materials.value[index] = data
+            materials.value[index] = res.data
             material_dialog.value = false
             selected_material.value = null
             materials.value = [...materials.value]

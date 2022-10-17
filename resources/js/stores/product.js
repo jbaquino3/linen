@@ -43,7 +43,7 @@ export const useProductStore = defineStore('product', () => {
         const res = await productApi.update(data, bulk_id)
         if(res.status) {
             const index = products.value.findIndex(m => m.bulk_id == bulk_id)
-            products.value[index] = data
+            products.value[index] = res.data
             product_dialog.value = false
             selected_product.value = null
             products.value = [...products.value]

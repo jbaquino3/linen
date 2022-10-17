@@ -44,7 +44,7 @@ class MaterialController extends Controller
         $material->archived_by = $request->archived ? \Auth::id() : null;
         $material->save();
 
-        return response()->json($updated);
+        return response()->json($material);
     }
 
     public function delete(Request $request, $id) {

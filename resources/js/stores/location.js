@@ -43,7 +43,7 @@ export const useLocationStore = defineStore('location', () => {
         const res = await locationApi.update(data, id)
         if(res.status) {
             const index = locations.value.findIndex(m => m.id == id)
-            locations.value[index] = data
+            locations.value[index] = res.data
             location_dialog.value = false
             selected_location.value = null
             locations.value = [...locations.value]

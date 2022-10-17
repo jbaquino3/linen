@@ -97,7 +97,7 @@
             }
 
             function destroy(item) {
-                productStore.deleteProduct(item.id)
+                productStore.deleteProduct(item.bulk_id)
             }
 
             return {

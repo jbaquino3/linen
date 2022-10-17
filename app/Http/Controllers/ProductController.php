@@ -47,7 +47,7 @@ class ProductController extends Controller
             "name" => $request->name,
         ]);
 
-        return response()->json($updated);
+        return response()->json($product);
     }
 
     public function delete(Request $request, $id) {
