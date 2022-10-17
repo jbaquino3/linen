@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed, onMounted } from 'vue'
 import * as materialApi from '@/api/material'
+import { useProductStore } from '@/stores/product'
 
 export const useMaterialStore = defineStore('material', () => {
+    const productStore = useProductStore()
+
     const init = ref(false)
     const materials = ref([])
     const materials_loading = ref(false)
@@ -13,6 +16,27 @@ export const useMaterialStore = defineStore('material', () => {
     const selected_material = ref(null)
 
     const computed_materials = computed(() => materials.value)
+
+    const material_select_items = computed(() => {
+        let items = []
+        let filtered = materials.value.filter(mat => {
+            return (productStore.selected_product && mat.stock_number == productStore.selected_product.material_stock_number) ||
+            (mat.quantity_used < mat.quantity && !mat.archived_at)
+        })
+
+        filtered.forEach(stg => {
+            items.push({
+                text: "#" + stg.stock_number + " " + stg.description,
+                value: stg.stock_number,
+                unit: stg.unit,
+                available: stg.quantity - stg.quantity_used + (
+                    productStore.selected_product && stg.stock_number == productStore.selected_product.material_stock_number ?
+                    productStore.selected_product.material_quantity : 0
+                )
+            })
+        })
+        return items
+    })
 
     onMounted(() => {
         materials_loading.value = false
@@ -88,6 +112,7 @@ export const useMaterialStore = defineStore('material', () => {
         dialog_error,
         material_dialog,
         selected_material,
+        material_select_items,
         fetchMaterials,
         updateMaterial,
         createMaterial,

@@ -56,7 +56,8 @@ class ProductSeeder extends Seeder
                 "name" => $product->product_name,
                 "unit" => $product->product_unit,
                 "unit_cost" => $product->product_unit_cost / (1 + ($product->issuance_additional_cost/100)),
-                "quantity" => $product->product_quantity
+                "quantity" => $product->product_quantity,
+                "create_date" => substr($product->create_date, 0, 10)
             ]);
 
             // Update material quantity

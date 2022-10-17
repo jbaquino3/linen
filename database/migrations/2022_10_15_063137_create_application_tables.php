@@ -79,6 +79,7 @@ return new class extends Migration
             $table->enum('unit', ['PIECE', 'SPOOL', 'YARD', 'ROLL', 'SACK/BAG']);
             $table->decimal('unit_cost', 8, 2)->default(0);
             $table->decimal('quantity', 8, 2)->default(0);
+            $table->date('create_date');
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
             $table->string('deleted_by')->nullable();

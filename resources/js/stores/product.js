@@ -37,12 +37,12 @@ export const useProductStore = defineStore('product', () => {
         products_loading.value = false
     }
 
-    async function updateProduct(data, id) {
+    async function updateProduct(data, bulk_id) {
         dialog_error.value = null
         dialog_loading.value = true
-        const res = await productApi.update(data, id)
+        const res = await productApi.update(data, bulk_id)
         if(res.status) {
-            const index = products.value.findIndex(m => m.id == id)
+            const index = products.value.findIndex(m => m.bulk_id == bulk_id)
             products.value[index] = data
             product_dialog.value = false
             selected_product.value = null
@@ -67,12 +67,12 @@ export const useProductStore = defineStore('product', () => {
         dialog_loading.value = false
     }
 
-    async function deleteProduct(id) {
+    async function deleteProduct(bulk_id) {
         products_error.value = null
         products_loading.value = true
-        const res = await productApi.destroy(id)
+        const res = await productApi.destroy(bulk_id)
         if(res.status) {
-            const index = products.value.findIndex(m => m.id == id)
+            const index = products.value.findIndex(m => m.bulk_id == bulk_id)
             products.value.splice(index, 1)
         } else {
             products_error.value = res.data

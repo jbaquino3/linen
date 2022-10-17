@@ -69,18 +69,18 @@ Route::group(['prefix' => 'material'], function () {
 
 Route::group(['prefix' => 'product'], function () {
     Route::get('/', [ProductController::class, 'index']);
-    Route::get('{id}', [MaterialController::class, 'read']);
-    Route::post('/', [MaterialController::class, 'store']);
-    Route::put('{id}', [MaterialController::class, 'update']);
-    Route::delete('{id}', [MaterialController::class, 'delete']);
+    Route::get('{id}', [ProductController::class, 'read']);
+    Route::post('/', [ProductController::class, 'store']);
+    Route::put('{id}', [ProductController::class, 'update']);
+    Route::delete('{id}', [ProductController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'transaction'], function () {
     Route::get('/', [TransactionController::class, 'index']);
-    Route::get('{id}', [MaterialController::class, 'read']);
-    Route::post('/', [MaterialController::class, 'store']);
-    Route::put('{id}', [MaterialController::class, 'update']);
-    Route::delete('{id}', [MaterialController::class, 'delete']);
+    Route::get('{id}', [TransactionController::class, 'read']);
+    Route::post('/', [TransactionController::class, 'store']);
+    Route::put('{id}', [TransactionController::class, 'update']);
+    Route::delete('{id}', [TransactionController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'request'], function () {

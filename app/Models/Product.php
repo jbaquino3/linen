@@ -21,6 +21,7 @@ class Product extends Model {
         'unit',
         'unit_cost',
         'quantity',
+        'create_date',
         'created_by',
         'updated_by',
         'deleted_by'
