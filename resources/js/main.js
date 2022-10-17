@@ -3,9 +3,9 @@ window.Vue = require('vue').default;
 
 import Vue from 'vue'
 import router from "@/router"
-import vuetify from '@/config/vuetify'
-import pinia from '@/config/pinia'
-import * as components from '@/config/components'
+import vuetify from '@/plugins/vuetify'
+import pinia from '@/plugins/pinia'
+import * as components from '@/plugins/components'
 
 import 'nprogress/nprogress.css'
 import VueTheMask from 'vue-the-mask'
