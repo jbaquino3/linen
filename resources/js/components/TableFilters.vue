@@ -51,7 +51,7 @@
                         dense
                         outlined
                         clearable
-                        :items="getOptions(item.value, item.type)"
+                        :items="item.items"
                         :value="value[item.value]"
                         @input="val => apply_filters(item.value, val)"
                     ></v-select>
@@ -83,18 +83,6 @@
         }),
 
         methods: {
-            getOptions(value, type) {
-                if(type == "boolean") {
-                    return [
-                        {text: 'Yes', value: true},
-                        {text: 'No', value: false}
-                    ]
-                } else {
-                    var temp = Object.assign([], this.items).map(c => c[value]).filter(item => item)
-                    return [...new Set(temp)]
-                }
-            },
-
             clear_filters() {
                 let filters = this.value
                 for(var key in filters) {

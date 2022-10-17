@@ -21,3 +21,15 @@ export function applyFilter (items, filterable, filters) {
 
     return items
 }
+
+export function getOptions(items, value, type) {
+    if(type == "boolean") {
+        return [
+            {text: 'Yes', value: true},
+            {text: 'No', value: false}
+        ]
+    } else {
+        var temp = Object.assign([], items).map(c => c[value]).filter(item => item)
+        return [...new Set(temp)]
+    }
+}
