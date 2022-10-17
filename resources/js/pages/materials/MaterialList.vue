@@ -6,22 +6,14 @@
         
         <v-data-table :headers="headers" :items="computed_materials" :search="search" :disabled="materials_loading" :loading="materials_loading">
             <template v-slot:[`item.description`]="{ item }">
-                <div class="d-flex flex-column">
-                    <div :class="($vuetify.theme.dark ? 'yellow--text' : ' font-weight-medium')">
-                        {{item.description}}
-                    </div>
-                    <div :class="($vuetify.theme.dark ? 'grey--text text--lighten-5' : '')">
-                        Stock #: {{item.stock_number}}
-                        <v-chip dark x-small label class="ml-2" :color="item.type == 'RAW' ? 'blue' : 'red'">{{item.type}}</v-chip>
-                        <v-chip dark x-small label class="ml-2" color="green">
-                            ₱{{item.unit_cost}}/{{item.unit.toLowerCase()}}
-                        </v-chip>
-                        <v-chip dark x-small label class="ml-2" color="orange">
-                            <v-icon left x-small>{{mdiDresser}}</v-icon>
-                            {{item.storage_name}}
-                        </v-chip>
-                    </div>
-                </div>
+                <table-material-details
+                    :unit="item.unit"
+                    :description="item.description"
+                    :stock-number="item.stock_number"
+                    :type="item.type"
+                    :unit-cost="item.unit_cost"
+                    :storage-name="item.storage.storage_name"
+                ></table-material-details>
             </template>
 
             <template v-slot:[`item.available`]="{ item }">

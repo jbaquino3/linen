@@ -18,7 +18,7 @@ class Storage extends Model {
 
     protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ]; 
     
-    protected $appends = [ 'stock_room_name', 'name' ];
+    protected $appends = [ 'stock_room_name', 'storage_name', 'name' ];
     
     public function materials() {
         return $this->hasMany(Material::class, 'storage_id');
@@ -26,6 +26,10 @@ class Storage extends Model {
 
     public function getNameAttribute() {
         return ucwords(strtolower($this->attributes['name']));
+    }
+
+    public function getStorageNameAttribute() {
+        return ucwords(strtolower(StockRoom::find($this->attributes['stock_room_id'])->name . " - " . $this->attributes['name']));
     }
 
     public function getStockRoomNameAttribute() {

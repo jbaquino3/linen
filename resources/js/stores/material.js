@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import * as materialApi from '@/api/material'
 
 export const useMaterialStore = defineStore('material', () => {
+    const init = ref(false)
     const materials = ref([])
     const materials_loading = ref(false)
     const materials_error = ref(null)
@@ -18,6 +19,10 @@ export const useMaterialStore = defineStore('material', () => {
         materials_error.value = null
         dialog_loading.value = false
         dialog_error.value = null
+        if(!init.value) {
+            fetchMaterials()
+            init.value = true
+        }
     })
 
     async function fetchMaterials() {

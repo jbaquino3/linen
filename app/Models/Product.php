@@ -40,8 +40,9 @@ class Product extends Model {
         });
     }
 
-    protected $hidden = [  'material_stock_number', 'storage_id', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
-    protected $appends = ['stock_numbers', 'material_name', 'storage_name', 'quantity_available'];
+    protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
+    protected $appends = ['stock_numbers', 'quantity_issued'];
+    protected $with = [ 'material', 'storage' ];
     protected $casts = [
         "material_quantity" => "float",
         "unit_cost" => "float",
@@ -49,13 +50,12 @@ class Product extends Model {
         "material_stock_number" => "integer"
     ];
 
-    public function getMaterialNameAttribute($value) {
-        return $this->attributes['material_stock_number'] ? Material::find($this->attributes['material_stock_number'])->description : 'what';
+    public function material() {
+        return $this->belongsTo(Material::class, 'material_stock_number');
     }
 
-    public function getStorageNameAttribute($value) {
-        $storage = Storage::find($this->attributes['storage_id']);
-        return $this->attributes['storage_id'] ? $storage->name . ", " . $storage->stock_room_name : null;
+    public function storage() {
+        return $this->belongsTo(Storage::class, 'storage_id');
     }
 
     public function getStockNumbersAttribute($value) {

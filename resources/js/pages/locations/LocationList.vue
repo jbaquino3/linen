@@ -33,7 +33,6 @@
     import { onMounted, ref } from 'vue'
     import { useLocationStore } from '@/stores/location'
     import { storeToRefs } from 'pinia'
-    import { mdiDresser } from '@mdi/js'
 
     export default {
         setup() {
@@ -67,8 +66,7 @@
                 headers,
                 search,
                 openEdit,
-                destroy,
-                ...icons
+                destroy
             }
         },
     }
@@ -78,8 +76,4 @@
         {text: "Name", value: "name"},
         {text: "Actions", value: "actions"},
     ]
-
-    const icons = {
-        mdiDresser
-    }
 </script>

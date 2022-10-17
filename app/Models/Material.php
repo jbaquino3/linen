@@ -34,7 +34,12 @@ class Material extends Model {
         "quantity" => "float"
     ];
 
-    protected $appends = [ 'archived_by_name', 'storage_name', 'quantity_used' ];
+    protected $appends = [ 'archived_by_name', 'quantity_used' ];
+    protected $with = [ 'storage' ];
+
+    public function storage() {
+        return $this->belongsTo(Storage::class, 'storage_id');
+    }
 
     protected static function booted() {
         static::addGlobalScope('order', function (\Illuminate\Database\Eloquent\Builder $builder) {
@@ -56,11 +61,6 @@ class Material extends Model {
 
     public function getArchivedByNameAttribute() {
         return $this->attributes['archived_by'] ? User::find($this->attributes['archived_by'])->name : null;
-    }
-
-    public function getStorageNameAttribute($value) {
-        $storage = Storage::find($this->attributes['storage_id']);
-        return $this->attributes['storage_id'] ? ucwords(strtolower($storage->stock_room_name . " - " . $storage->name)) : null;
     }
 
     public function getQuantityUsedAttribute() {

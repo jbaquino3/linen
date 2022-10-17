@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import * as storageApi from '@/api/storage'
 
 export const useStorageStore = defineStore('storage', () => {
+    const init = ref(false)
     const storages = ref([])
     const storages_loading = ref(false)
     const storages_error = ref(null)
@@ -13,6 +14,10 @@ export const useStorageStore = defineStore('storage', () => {
     onMounted(() => {
         storages_loading.value = false
         storages_error.value = null
+        if(!init.value) {
+            fetchStorages()
+            init.value = true
+        }
     })
 
     const storage_select_items = computed(() => {

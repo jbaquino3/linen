@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import * as locationApi from '@/api/location'
 
 export const useLocationStore = defineStore('location', () => {
+    const init = ref(false)
     const locations = ref([])
     const locations_loading = ref(false)
     const locations_error = ref(null)
@@ -18,6 +19,10 @@ export const useLocationStore = defineStore('location', () => {
         locations_error.value = null
         dialog_loading.value = false
         dialog_error.value = null
+        if(!init.value) {
+            fetchLocations()
+            init.value = true
+        }
     })
 
     async function fetchLocations() {
