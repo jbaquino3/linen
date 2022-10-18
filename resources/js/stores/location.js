@@ -1,112 +1,123 @@
 import { defineStore } from 'pinia'
-import { ref, computed, onMounted, reactive } from 'vue'
+import { computed, reactive, watchEffect, toRefs } from 'vue'
 import * as locationApi from '@/api/location'
-import { applyFilter, getOptions } from '@/plugins/filter'
+import { updateArrayByProperty } from '@/plugins/helpers'
+import useFilters from '../plugins/filter'
+
+const locationFilters = useFilters()
 
 export const useLocationStore = defineStore('location', () => {
-    const init = ref(false)
-    const locations = ref([])
-    const locations_loading = ref(false)
-    const locations_error = ref(null)
-    const dialog_loading = ref(false)
-    const dialog_error = ref(null)
-    const location_dialog = ref(false)
-    const selected_location = ref(null)
-    const filterable = ref([
-        {text: 'Type', value: 'type', type: 'distinct'},
-        {text: 'Is Active', value: 'transaction_count', type: 'boolean'}
-    ])
-    const filters = reactive({
-        type: [],
-        transaction_count: null
-    })
+    const locations = reactive(locationsObject)
+    const dialog = reactive(dialogObject)
+    const filter = getFilterObject()
+    const computed_locations = computed(() => locationFilters.applyFilter(locations.data, filter.filterable, filter.filters))
 
-    const computed_locations = computed(() => applyFilter(locations.value, filterable.value, filters))
-
-    onMounted(async () => {
-        locations_loading.value = false
-        locations_error.value = null
-        dialog_loading.value = false
-        dialog_error.value = null
-        if(!init.value) {
-            await fetchLocations()
-            init.value = true
-        }
-
-        // init filter items
-        filterable.value.forEach(f => {
-            f.items = getOptions(locations.value, f.value, f.type)
-        })
-    })
+    watchEffect(() => { filter.updateFilters(locations.data) })
 
     async function fetchLocations() {
-        locations_error.value = null
-        locations_loading.value = true
+        locations.init()
         const res = await locationApi.index()
-        if(res.status) {
-            locations.value = res.data
-        } else {
-            locations_error.value = res.data
-        }
-        locations_loading.value = false
+        res.status ? locations.success(res.data) : locations.error(res.data)
     }
 
     async function updateLocation(data, id) {
-        dialog_error.value = null
-        dialog_loading.value = true
+        dialog.init()
         const res = await locationApi.update(data, id)
         if(res.status) {
-            const index = locations.value.findIndex(m => m.id == id)
-            locations.value[index] = res.data
-            location_dialog.value = false
-            selected_location.value = null
-            locations.value = [...locations.value]
+            locations.update(id, res.data)
+            dialog.success()
         } else {
-            dialog_error.value = res.data
+            dialog.error(res.data)
         }
-        dialog_loading.value = false
     }
 
     async function createLocation(data) {
-        dialog_error.value = null
-        dialog_loading.value = true
+        dialog.init()
         const res = await locationApi.store(data)
         if(res.status) {
-            locations.value.unshift(res.data)
-            location_dialog.value = false
-            selected_location.value = null
+            locations.insert(res.data)
+            dialog.success()
         } else {
-            dialog_error.value = res.data
+            dialog.error(res.data)
         }
-        dialog_loading.value = false
     }
 
     async function deleteLocation(id) {
-        locations_error.value = null
-        locations_loading.value = true
+        locations.init()
         const res = await locationApi.destroy(id)
         if(res.status) {
-            const index = locations.value.findIndex(m => m.id == id)
-            locations.value.splice(index, 1)
+            locations.delete(id)
         } else {
-            locations_error.value = res.data
+            locations.error(res.data)
         }
-        locations_loading.value = false
     }
   
     return {
+        ...toRefs(locations),
+        ...toRefs(dialog),
+        ...toRefs(filter),
         computed_locations,
-        locations_loading,
-        locations_error,
-        dialog_loading,
-        dialog_error,
-        location_dialog,
-        selected_location,
-        filterable,
-        filters,
         fetchLocations,
         updateLocation,
         createLocation,
         deleteLocation
     }
 })
+
+const locationsObject = {
+    data: [],
+    locations_loading: false,
+    locations_error: null,
+    selected_location: null,
+    init: function () {
+        this.selected_location = null
+        this.locations_loading = true
+        this.locations_error = null
+    },
+    error: function(err) {
+        this.locations_loading = false
+        this.locations_error = err
+    },
+    success: function(data) {
+        this.locations_loading = false
+        this.data = data
+    },
+    update: function(id, data) {
+        this.selected_location = null
+        this.success([...updateArrayByProperty(this.data, 'id', id, data)])
+    },
+    insert: function(data) {
+        this.data.unshift(data)
+        this.selected_location = null
+    },
+    delete: function(id) {
+        const index = this.data.findIndex(m => m.id == id)
+        this.data.splice(index, 1)
+        this.locations_loading = false
+    }
+}
+
+const dialogObject = {
+    location_dialog: false,
+    dialog_loading: false,
+    dialog_error: null,
+    init: function () {
+        this.dialog_loading = true
+        this.dialog_error = null
+    },
+    error: function(err) {
+        this.dialog_loading = false
+        this.dialog_error = err
+    },
+    success: function() {
+        this.dialog_loading = false
+        this.location_dialog = false
+    }
+}
+
+function getFilterObject() {
+    const ownFilterObject = Object.assign({}, locationFilters.filtersObject)
+    ownFilterObject.addFilterable({text: 'Type', value: 'type', type: 'distinct'})
+    ownFilterObject.addFilterable({text: 'Is Active', value: 'transaction_count', type: 'boolean'})
+    return reactive(Object.assign({}, ownFilterObject))
+}

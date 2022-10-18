@@ -1,125 +1,137 @@
 import { defineStore } from 'pinia'
-import { ref, computed, onMounted, reactive } from 'vue'
+import { computed, reactive, watchEffect, toRefs } from 'vue'
 import * as productApi from '@/api/product'
-import { applyFilter, getOptions } from '@/plugins/filter'
+import { updateArrayByProperty } from '@/plugins/helpers'
+import useFilters from '../plugins/filter'
+
+const productFilters = useFilters()
 
 export const useProductStore = defineStore('product', () => {
-    const init = ref(false)
-    const products = ref([])
-    const products_loading = ref(false)
-    const products_error = ref(null)
-    const dialog_loading = ref(false)
-    const dialog_error = ref(null)
-    const product_dialog = ref(false)
-    const selected_product = ref(null)
-    const filterable = ref([
-        {text: 'Available', value: 'available', type: 'boolean'},
-        {text: 'Storage', value: 'storage_name', type: 'distinct'},
-        {text: 'Material', value: 'material_name', type: 'distinct'},
-    ])
-    const filters = reactive({
-        available: null,
-        storage_name: null,
-        material_name: null
-    })
+    const products = reactive(productsObject)
+    const dialog = reactive(dialogObject)
+    const filter = getFilterObject()
+    const computed_products = computed(() => productFilters.applyFilter(products.data, filter.filterable, filter.filters))
 
-    const computed_products = computed(() => applyFilter(products.value, filterable.value, filters))
-
-    onMounted(async () => {
-        products_loading.value = false
-        products_error.value = null
-        dialog_loading.value = false
-        dialog_error.value = null
-        if(!init.value) {
-            await fetchProducts()
-            init.value = true
-        }
-
-        // init filter items
-        filterable.value.forEach(f => {
-            f.items = getOptions(products.value, f.value, f.type)
-        })
-    })
+    watchEffect(() => { filter.updateFilters(products.data) })
 
     async function fetchProducts() {
-        products_error.value = null
-        products_loading.value = true
+        products.init()
         const res = await productApi.index()
-        if(res.status) {
-            products.value = loadProducts(res.data)
-        } else {
-            products_error.value = res.data
-        }
-        products_loading.value = false
-    }
-
-    function loadProducts(data) {
-        let items = []
-        data.forEach(item => {
-            item.available = item.quantity-item.quantity_issued
-            item.storage_name = item.storage.storage_name
-            item.material_name = item.material.description
-            items.push(item)
-        })
-        return items
+        res.status ? products.success(loadProducts(res.data)) : products.error(res.data)
     }
 
     async function updateProduct(data, bulk_id) {
-        dialog_error.value = null
-        dialog_loading.value = true
+        dialog.init()
         const res = await productApi.update(data, bulk_id)
         if(res.status) {
-            const index = products.value.findIndex(m => m.bulk_id == bulk_id)
-            products.value[index] = res.data
-            product_dialog.value = false
-            selected_product.value = null
-            products.value = [...products.value]
+            products.update(bulk_id, loadProducts([res.data])[0])
+            dialog.success()
         } else {
-            dialog_error.value = res.data
+            dialog.error(res.data)
         }
-        dialog_loading.value = false
     }
 
     async function createProduct(data) {
-        dialog_error.value = null
-        dialog_loading.value = true
+        dialog.init()
         const res = await productApi.store(data)
         if(res.status) {
-            products.value.unshift(res.data)
-            product_dialog.value = false
-            selected_product.value = null
+            products.insert(loadProducts([res.data])[0])
+            dialog.success()
         } else {
-            dialog_error.value = res.data
+            dialog.error(res.data)
         }
-        dialog_loading.value = false
     }
 
     async function deleteProduct(bulk_id) {
-        products_error.value = null
-        products_loading.value = true
+        products.init()
         const res = await productApi.destroy(bulk_id)
         if(res.status) {
-            const index = products.value.findIndex(m => m.bulk_id == bulk_id)
-            products.value.splice(index, 1)
+            products.delete(bulk_id)
         } else {
-            products_error.value = res.data
+            products.error(res.data)
         }
-        products_loading.value = false
     }
   
     return {
+        ...toRefs(products),
+        ...toRefs(dialog),
+        ...toRefs(filter),
         computed_products,
-        products_loading,
-        products_error,
-        dialog_loading,
-        dialog_error,
-        product_dialog,
-        selected_product,
-        filterable,
-        filters,
         fetchProducts,
         updateProduct,
         createProduct,
         deleteProduct
     }
 })
+
+const productsObject = {
+    data: [],
+    products_loading: false,
+    products_error: null,
+    selected_product: null,
+    init: function () {
+        this.selected_product = null
+        this.products_loading = true
+        this.products_error = null
+    },
+    error: function(err) {
+        this.products_loading = false
+        this.products_error = err
+    },
+    success: function(data) {
+        this.products_loading = false
+        this.data = data
+    },
+    update: function(bulk_id, data) {
+        this.selected_product = null
+        this.success([...updateArrayByProperty(this.data, 'bulk_id', bulk_id, data)])
+    },
+    insert: function(data) {
+        this.data.unshift(data)
+        this.selected_product = null
+    },
+    delete: function(bulk_id) {
+        const index = this.data.findIndex(m => m.bulk_id == bulk_id)
+        this.data.splice(index, 1)
+        this.products_loading = false
+    }
+}
+
+const dialogObject = {
+    product_dialog: false,
+    dialog_loading: false,
+    dialog_error: null,
+    init: function () {
+        this.dialog_loading = true
+        this.dialog_error = null
+    },
+    error: function(err) {
+        this.dialog_loading = false
+        this.dialog_error = err
+    },
+    success: function() {
+        this.dialog_loading = false
+        this.product_dialog = false
+    }
+}
+
+function getFilterObject() {
+    const ownFilterObject = Object.assign({}, productFilters.filtersObject)
+    ownFilterObject.addFilterable({text: 'Available', value: 'available', type: 'boolean'})
+    ownFilterObject.addFilterable({text: 'Storage', value: 'storage_name', type: 'distinct'})
+    ownFilterObject.addFilterable({text: 'Material', value: 'material_name', type: 'distinct'})
+    return reactive(Object.assign({}, ownFilterObject))
+}
+
+function loadProducts(data) {
+    let items = []
+    data.forEach(item => {
+        item.available = item.quantity-item.quantity_issued
+        item.storage_name = item.storage.storage_name
+        item.material_name = item.material.description
+        item.material_unit = item.material.unit ? item.material.unit : ""
+        item.material_unit_cost = item.material.unit_cost
+        items.push(item)
+    })
+    return items
+}

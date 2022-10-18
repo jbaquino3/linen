@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import * as storageApi from '@/api/storage'
 
 export const useStorageStore = defineStore('storage', () => {
-    const init = ref(false)
     const storages = ref([])
     const storages_loading = ref(false)
     const storages_error = ref(null)
@@ -11,16 +10,11 @@ export const useStorageStore = defineStore('storage', () => {
     const selected_storage = ref(null)
     const computed_storages = computed(() => storages.value)
 
-    onMounted(() => {
-        storages_loading.value = false
-        storages_error.value = null
-        if(!init.value) {
-            fetchStorages()
-            init.value = true
-        }
-    })
-
     const storage_select_items = computed(() => {
+        if(storages.value.length == 0) {
+            fetchStorages()
+        }
+
         let items = []
         storages.value.forEach(stg => {
             items.push({

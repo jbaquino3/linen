@@ -24,7 +24,7 @@
                         :stock-number="item.stock_number"
                         :type="item.type"
                         :unit-cost="item.unit_cost"
-                        :storage-name="item.storage.storage_name"
+                        :storage-name="item.storage_name"
                     ></table-material-details>
                 </template>
 
@@ -94,6 +94,7 @@
                 computed_materials,
                 materials_loading,
                 materials_error,
+                material_dialog,
                 headers,
                 search,
                 filters,

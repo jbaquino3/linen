@@ -10,7 +10,7 @@
                     </v-container>
                 </v-card-title>
 
-                <v-card-text>
+                <v-card-text v-if="product">
                     <v-container fluid>
                         <v-alert v-if="dialog_error" type="error" text class="mb-2">
                             {{dialog_error}}
@@ -21,6 +21,7 @@
                                 <v-textarea
                                     label="Product Description"
                                     v-model="product.name"
+                                    rows="2"
                                 ></v-textarea>
                             </v-col>
                             
@@ -34,12 +35,13 @@
 
                             <v-col cols="12">
                                 <v-text-field
-                                    :label="'Quantity of used material. Available: ' + material_available + ' ' + material_unit.toLowerCase() + '/s'"
+                                    v-if="product.material_unit"
+                                    :label="'Quantity of used material. Available: ' + material_available + ' ' + product.material_unit.toLowerCase() + '/s'"
                                     v-model="product.material_quantity"
                                     type="number"
                                 >
                                     <template v-slot:append>
-                                        {{material_unit.toLowerCase()}}/s
+                                        {{product.material_unit.toLowerCase()}}/s @ ₱{{product.material_unit_cost}} each
                                     </template>
                                 </v-text-field>
                             </v-col>
@@ -123,12 +125,6 @@
             const product = ref({})
             const date_menu = ref(false)
 
-            const material_unit = computed(() => {
-                const material = material_select_items.value.find(i => i.value == product.value.material_stock_number)
-
-                return material ? material.unit : ''
-            })
-
             const material_available = computed(() => {
                 const material = material_select_items.value.find(i => i.value == product.value.material_stock_number)
 
@@ -159,12 +155,12 @@
             }
 
             function assignProduct() {
-                product.value = selected_product.value ? Object.assign({}, selected_product.value) : {
+                product.value = Object.assign({
                     create_date: new Date().toISOString().substring(0,10),
                     stock_numbers: [],
                     quantity: "",
                     material_quantity: 0
-                }
+                }, selected_product.value)
                 stock_numbers.value = helper.integerArrayToRanges(product.value.stock_numbers)
                 product.value.starting_stock_number = product.value.stock_numbers.length > 0 ? product.value.stock_numbers[0] : 1
             }
@@ -199,7 +195,6 @@
                 date_menu,
                 storage_select_items,
                 material_select_items,
-                material_unit,
                 material_available,
                 stock_numbers,
                 closeDialog,

@@ -47,8 +47,9 @@
                         :small-chips="item.type=='distinct'"
                         :prepend-inner-icon="mdiFilter"
                         hide-details
-                        class="mr-2 shrink"
+                        class="ml-2 shrink"
                         dense
+                        deletable-chips
                         outlined
                         clearable
                         :items="item.items"

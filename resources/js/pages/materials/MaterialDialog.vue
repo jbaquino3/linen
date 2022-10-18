@@ -20,6 +20,14 @@
                         </v-alert>
 
                         <v-row>
+                            <v-col cols="12">
+                                <v-textarea
+                                    label="Description"
+                                    v-model="material.description"
+                                    rows="2"
+                                ></v-textarea>
+                            </v-col>
+
                             <v-col cols="12" sm="4">
                                 <v-select
                                     label="Type"
@@ -96,13 +104,6 @@
                                 </div>
                                 
                             </v-col>
-
-                            <v-col cols="12">
-                                <v-textarea
-                                    label="Description"
-                                    v-model="material.description"
-                                ></v-textarea>
-                            </v-col>
                         </v-row>
 
                         <v-btn dark color="primary" @click="save">
@@ -146,7 +147,13 @@
             }
 
             function assignMaterial() {
-                material.value = selected_material.value ? Object.assign({}, selected_material.value) : {}
+                material.value = Object.assign({
+                    received_at: new Date().toISOString().substring(0,10),
+                    type: "RAW",
+                    unit: "PIECE",
+                    quantity: 0,
+                    unit_cost: 0
+                }, selected_material.value)
                 material.value.archived = !!material.value.archived_at
             }
 

@@ -121,6 +121,7 @@
                 computed_products,
                 products_loading,
                 products_error,
+                product_dialog,
                 headers,
                 search,
                 filters,
