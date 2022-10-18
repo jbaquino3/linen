@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 import * as materialApi from '@/api/material'
 import { useProductStore } from '@/stores/product'
+import { applyFilter, getOptions } from '@/plugins/filter'
 
 export const useMaterialStore = defineStore('material', () => {
     const productStore = useProductStore()
@@ -14,8 +15,16 @@ export const useMaterialStore = defineStore('material', () => {
     const dialog_error = ref(null)
     const material_dialog = ref(false)
     const selected_material = ref(null)
+    const filterable = ref([
+        {text: 'Available', value: 'available', type: 'boolean'},
+        {text: 'Storage', value: 'storage_name', type: 'distinct'},
+    ])
+    const filters = reactive({
+        available: null,
+        storage_name: null
+    })
 
-    const computed_materials = computed(() => materials.value)
+    const computed_materials = computed(() => applyFilter(materials.value, filterable.value, filters))
 
     const material_select_items = computed(() => {
         let items = []
@@ -38,15 +47,20 @@ export const useMaterialStore = defineStore('material', () => {
         return items
     })
 
-    onMounted(() => {
+    onMounted(async () => {
         materials_loading.value = false
         materials_error.value = null
         dialog_loading.value = false
         dialog_error.value = null
         if(!init.value) {
-            fetchMaterials()
+            await fetchMaterials()
             init.value = true
         }
+
+        // init filter items
+        filterable.value.forEach(f => {
+            f.items = getOptions(materials.value, f.value, f.type)
+        })
     })
 
     async function fetchMaterials() {
@@ -54,11 +68,21 @@ export const useMaterialStore = defineStore('material', () => {
         materials_loading.value = true
         const res = await materialApi.index()
         if(res.status) {
-            materials.value = res.data
+            materials.value = loadMaterials(res.data)
         } else {
             materials_error.value = res.data
         }
         materials_loading.value = false
+    }
+
+    function loadMaterials(data) {
+        let items = []
+        data.forEach(item => {
+            item.available = item.quantity-item.quantity_used
+            item.storage_name = item.storage.storage_name
+            items.push(item)
+        })
+        return items
     }
 
     async function updateMaterial(data, stock_number) {
@@ -113,9 +137,11 @@ export const useMaterialStore = defineStore('material', () => {
         material_dialog,
         selected_material,
         material_select_items,
+        filterable,
+        filters,
         fetchMaterials,
         updateMaterial,
         createMaterial,
         deleteMaterial
     }
-}, { persist: true })
+})

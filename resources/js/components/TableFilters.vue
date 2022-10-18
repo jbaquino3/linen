@@ -68,7 +68,6 @@
         name: "TableFilters",
 
         props: {
-            items: {type: Array, default: () => []},
             filterable: {type: Array, default: ()=>[]},
             value: {type: Object, default: ()=>{}},
             hasSearch: {type: Boolean, default: true},

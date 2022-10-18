@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 import * as locationApi from '@/api/location'
+import { applyFilter, getOptions } from '@/plugins/filter'
 
 export const useLocationStore = defineStore('location', () => {
     const init = ref(false)
@@ -11,18 +12,31 @@ export const useLocationStore = defineStore('location', () => {
     const dialog_error = ref(null)
     const location_dialog = ref(false)
     const selected_location = ref(null)
+    const filterable = ref([
+        {text: 'Type', value: 'type', type: 'distinct'},
+        {text: 'Is Active', value: 'transaction_count', type: 'boolean'}
+    ])
+    const filters = reactive({
+        type: [],
+        transaction_count: null
+    })
 
-    const computed_locations = computed(() => locations.value)
+    const computed_locations = computed(() => applyFilter(locations.value, filterable.value, filters))
 
-    onMounted(() => {
+    onMounted(async () => {
         locations_loading.value = false
         locations_error.value = null
         dialog_loading.value = false
         dialog_error.value = null
         if(!init.value) {
-            fetchLocations()
+            await fetchLocations()
             init.value = true
         }
+
+        // init filter items
+        filterable.value.forEach(f => {
+            f.items = getOptions(locations.value, f.value, f.type)
+        })
     })
 
     async function fetchLocations() {
@@ -88,9 +102,11 @@ export const useLocationStore = defineStore('location', () => {
         dialog_error,
         location_dialog,
         selected_location,
+        filterable,
+        filters,
         fetchLocations,
         updateLocation,
         createLocation,
         deleteLocation
     }
-}, { persist: true })
+})
