@@ -22,8 +22,8 @@
                 </template>
 
                 <template v-slot:[`item.name`]="{ item }">
-                    <div :class="($vuetify.theme.dark ? 'yellow--text' : ' font-weight-medium') + ' title'">
-                        {{item.name}}
+                    <div :class="($vuetify.theme.dark ? 'yellow--text' : ' font-weight-medium') + ' subtitle-1 font-italic'">
+                        {{item.name.toUpperCase()}}
                     </div>
                 </template>
 

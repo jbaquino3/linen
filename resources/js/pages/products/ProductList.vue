@@ -20,15 +20,7 @@
                 <template v-slot:[`item.name`]="{ item }">
                     <div class="d-flex flex-column">
                         <div :class="($vuetify.theme.dark ? 'yellow--text' : ' ')">
-                            <v-tooltip dark right v-if="item.name.length > 40">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <span v-bind="attrs" v-on="on" class="title">
-                                        {{item.name.slice(0,18)}}...{{item.name.slice(-14)}}
-                                    </span>
-                                </template>
-                                <span>{{item.name}}</span>
-                            </v-tooltip>
-                            <div v-else class="title">
+                            <div class="subtitle-1 font-italic">
                                 {{item.name}}
                             </div>
                         </div>
@@ -136,7 +128,6 @@
 
     const headers = [
         {text: "Product", value: "name"},
-        {text: "Material Used", value: "material"},
         {text: "Available", value: "available"},
         {text: "Actions", value: "actions"},
     ]

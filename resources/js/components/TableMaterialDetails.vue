@@ -1,16 +1,7 @@
 <template>
     <div class="d-flex flex-column">
         <div :class="($vuetify.theme.dark ? 'yellow--text' : ' font-weight-medium') + ' d-flex'">
-            
-            <v-tooltip dark right v-if="description.length > 40">
-                <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on" class="title">
-                        {{description.slice(0,18)}}...{{description.slice(-14)}}
-                    </span>
-                </template>
-                <span>{{description}}</span>
-            </v-tooltip>
-            <div v-else class="title">
+            <div class="subtitle-1 font-italic">
                 {{description}}
             </div>
         </div>
