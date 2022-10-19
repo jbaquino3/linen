@@ -126,7 +126,8 @@ function getFilterObject() {
 function loadProducts(data) {
     let items = []
     data.forEach(item => {
-        item.available = item.quantity-item.quantity_issued
+        item.available = item.quantity-item.quantity_issued+item.quantity_returned
+        item.quantity_issued = item.quantity_issued-item.quantity_condemned-item.quantity_lost
         item.storage_name = item.storage.storage_name
         item.material_name = item.material.description
         item.material_unit = item.material.unit ? item.material.unit : ""

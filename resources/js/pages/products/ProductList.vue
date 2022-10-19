@@ -32,19 +32,11 @@
                                 <v-icon left x-small>{{mdiDresser}}</v-icon>
                                 {{item.storage.storage_name}}
                             </v-chip>
+                            <v-chip dark x-small label class="ml-2" color="grey" v-if="item.quantity">
+                                {{item.quantity}} {{item.unit.toLowerCase()}}/s
+                            </v-chip>
                         </div>
                     </div>
-                </template>
-
-                <template v-slot:[`item.material`]="{ item }">
-                    <table-material-details
-                        :quantity="item.material_quantity"
-                        :unit="item.material.unit"
-                        :description="item.material.description"
-                        :stock-number="item.material.stock_number"
-                        :type="item.material.type"
-                        :unit-cost="item.material.unit_cost"
-                    ></table-material-details>
                 </template>
 
                 <template v-slot:[`item.available`]="{ item }">
