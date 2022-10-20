@@ -12,6 +12,21 @@ export const useLocationStore = defineStore('location', () => {
     const filter = getFilterObject()
     const computed_locations = computed(() => locationFilters.applyFilter(locations.data, filter.filterable, filter.filters))
 
+    const location_select_items = computed(() => {
+        if(locations.data.length == 0) {
+            fetchLocations()
+        }
+
+        let items = []
+        locations.data.forEach(stg => {
+            items.push({
+                text: stg.name + " (" + stg.type + ")",
+                value: stg.id
+            })
+        })
+        return items
+    })
+
     watchEffect(() => { filter.updateFilters(locations.data) })
 
     async function fetchLocations() {
@@ -57,6 +72,7 @@ export const useLocationStore = defineStore('location', () => {
         ...toRefs(dialog),
         ...toRefs(filter),
         computed_locations,
+        location_select_items,
         fetchLocations,
         updateLocation,
         createLocation,

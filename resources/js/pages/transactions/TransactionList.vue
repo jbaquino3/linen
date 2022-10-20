@@ -8,6 +8,7 @@
             v-model="filters"
             @search="s => search=s"
             @reload="reload"
+            @add="$router.push('/auth/transactions/items')"
         ></table-filters>
 
         <v-alert v-if="transaction_error" type="error" text class="mt-2">

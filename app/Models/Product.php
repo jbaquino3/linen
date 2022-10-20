@@ -28,6 +28,10 @@ class Product extends Model {
     ];
 
     protected static function booted() {
+        static::addGlobalScope('order', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $builder->orderBy('name', 'asc');
+        });
+        
         static::creating(function ($model) {
             $model->created_by = "2010743";
 
@@ -42,7 +46,7 @@ class Product extends Model {
     }
 
     protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ];
-    protected $appends = ['stock_numbers', 'quantity_issued', 'quantity_condemned', 'quantity_returned', 'quantity_lost'];
+    protected $appends = ['stock_numbers'];
     protected $with = [ 'material', 'storage' ];
     protected $casts = [
         "material_quantity" => "float",
@@ -65,58 +69,6 @@ class Product extends Model {
 
     public function setStockNumbersAttribute($value) {
         $this->attributes["stock_numbers"] = json_encode($value);
-    }
-
-    public function getQuantityIssuedAttribute() {
-        $trans_items = TransactionItem::leftJoin((config("app.debug") ? "dev" : "dbo") . ".transactions", "transaction_items.transaction_id", "=", "transactions.id")
-            ->where("transaction_items.product_bulk_id", $this->attributes['bulk_id'])
-            ->where("transactions.type", "ISSUANCE")
-            ->get();
-
-        $sum = 0;
-        foreach($trans_items as $item) {
-            $sum += $item->quantity;
-        }
-        return $sum;
-    }
-
-    public function getQuantityCondemnedAttribute() {
-        $trans_items = TransactionItem::leftJoin((config("app.debug") ? "dev" : "dbo") . ".transactions", "transaction_items.transaction_id", "=", "transactions.id")
-            ->where("transaction_items.product_bulk_id", $this->attributes['bulk_id'])
-            ->where("transactions.type", "CONDEMN")
-            ->get();
-
-        $sum = 0;
-        foreach($trans_items as $item) {
-            $sum += $item->quantity;
-        }
-        return $sum;
-    }
-
-    public function getQuantityReturnedAttribute() {
-        $trans_items = TransactionItem::leftJoin((config("app.debug") ? "dev" : "dbo") . ".transactions", "transaction_items.transaction_id", "=", "transactions.id")
-            ->where("transaction_items.product_bulk_id", $this->attributes['bulk_id'])
-            ->where("transactions.type", "RETURN")
-            ->get();
-
-        $sum = 0;
-        foreach($trans_items as $item) {
-            $sum += $item->quantity;
-        }
-        return $sum;
-    }
-
-    public function getQuantityLostAttribute() {
-        $trans_items = TransactionItem::leftJoin((config("app.debug") ? "dev" : "dbo") . ".transactions", "transaction_items.transaction_id", "=", "transactions.id")
-            ->where("transaction_items.product_bulk_id", $this->attributes['bulk_id'])
-            ->where("transactions.type", "LOST")
-            ->get();
-
-        $sum = 0;
-        foreach($trans_items as $item) {
-            $sum += $item->quantity;
-        }
-        return $sum;
     }
 
     public function getQuantityAvailableAttribute() {

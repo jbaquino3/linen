@@ -14,6 +14,30 @@ export const useProductStore = defineStore('product', () => {
 
     watchEffect(() => { filter.updateFilters(products.data) })
 
+    const product_select_items = computed(() => {
+        if(products.data.length == 0) {
+            fetchProducts()
+        }
+
+        let items = []
+        let filtered = products.data.filter(p => {
+            return p.available > 0
+        })
+
+        filtered.forEach(stg => {
+            items.push(Object.assign({}, {
+                text: "#" + stg.material_stock_number + " " + stg.name,
+                value: stg.bulk_id,
+                unit: stg.unit,
+                unit_cost: stg.unit_cost,
+                available: stg.available,
+                material_name: stg.material_name,
+                stock_numbers_available: stg.stock_numbers_available
+            }))
+        })
+        return items
+    })
+
     async function fetchProducts() {
         products.init()
         const res = await productApi.index()
@@ -57,6 +81,7 @@ export const useProductStore = defineStore('product', () => {
         ...toRefs(dialog),
         ...toRefs(filter),
         computed_products,
+        product_select_items,
         fetchProducts,
         updateProduct,
         createProduct,

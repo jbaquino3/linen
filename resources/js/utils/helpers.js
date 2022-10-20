@@ -21,8 +21,8 @@ export function useHelpers() {
             if(range.length > 0) {
                 const splitted = range.split("-")
                 if(splitted.length == 1) {
-                    values.push(splitted[0])
-                } else if(splitted.length == 2) {
+                    values.push(parseInt(splitted[0]))
+                } else if(splitted.length == 2 && splitted[0].length > 0 && splitted[1] > 0) {
                     let start = parseInt(splitted[0])
                     let end = parseInt(splitted[1])
 

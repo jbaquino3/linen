@@ -4,11 +4,47 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\TransactionItem;
 
 class ProductController extends Controller
 {
     public function index(Request $request) {
         $products = Product::all();
+
+        for($i=0; $i<sizeof($products); $i++) {
+            $stock_numbers_available = $products[$i]->stock_numbers;
+            $quantity_issued = 0;
+            $quantity_condemned = 0;
+            $quantity_lost = 0;
+            $quantity_returned = 0;
+
+            $issued = TransactionItem::leftJoin((config("app.debug") ? "dev" : "dbo") . ".transactions", "transaction_items.transaction_id", "=", "transactions.id")
+                ->where("transaction_items.product_bulk_id", $products[$i]->bulk_id)
+                ->get();
+
+            foreach($issued as $issue) {
+                if($issue->type == "ISSUANCE") {
+                    $stock_numbers_available = array_values(array_diff($stock_numbers_available, $issue->stock_numbers));
+                    $quantity_issued += $issue->quantity;
+                } else if($issue->type == "CONDEMN") {
+                    $quantity_condemned += $issue->quantity;
+                } else if($issue->type == "LOST") {
+                    $quantity_lost += $issue->quantity;
+                } else if($issue->type == "RETURN") {
+                    $stock_numbers_available = array_merge($stock_numbers_available, $issue->stock_numbers);
+                    $quantity_returned += $issue->quantity;
+                }
+                
+            }
+
+            sort($stock_numbers_available);
+            
+            $products[$i]->stock_numbers_available = $stock_numbers_available;
+            $products[$i]->quantity_issued = $quantity_issued;
+            $products[$i]->quantity_condemned = $quantity_condemned;
+            $products[$i]->quantity_lost = $quantity_lost;
+            $products[$i]->quantity_returned = $quantity_returned;
+        }
 
         return response()->json($products);
     }

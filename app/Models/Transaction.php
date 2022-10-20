@@ -17,7 +17,7 @@ class Transaction extends Model {
     ];
 
     protected $casts = [ 'is_final' => 'boolean' ];
-    protected $hidden = [ 'location_id', 'created_at', 'updated_at', 'deleted_at' ];  
+    protected $hidden = [ 'created_at', 'updated_at', 'deleted_at' ];  
     protected $with = ['items'];
     protected $appends = [ 'location_name', 'created_by_name' ];
 

@@ -1,5 +1,5 @@
 export default [
-    { path: '/', redirect: { name: 'Auth' } },
+    { path: '/', redirect: { name: 'Dashboard' } },
     {
         path: "/auth",
         component: () => import(/* webpackPrefetch: true */ "@/app/Auth"),
@@ -19,6 +19,11 @@ export default [
                 path: "transactions",
                 name: "Transactions",
                 component: () => import(/* webpackPrefetch: true */ "@/pages/transactions"),
+            },
+            {
+                path: "transactions/items",
+                name: "Transactions Items",
+                component: () => import(/* webpackPrefetch: true */ "@/pages/transaction_items"),
             },
             {
                 path: "locations",
