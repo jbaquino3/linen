@@ -14,6 +14,10 @@ export const store = async (data) => {
     return await _post(`/api/${resource}`, data)
 }
 
+export const addItem = async (data, id) => {
+    return await _post(`/api/${resource}/${id}`, data)
+}
+
 export const update = async (data, id) => {
     return await _put(`/api/${resource}/${id}`, data)
 }

@@ -8,16 +8,8 @@
                 dense
                 hide-details
                 :items="location_select_items"
+                v-model="selected_transaction.location_id"
             ></v-select>
-
-            <v-text-field
-                label="Date"
-                class="shrink mr-2"
-                outlined
-                dense
-                hide-details
-                readonly
-            ></v-text-field>
 
             <v-select
                 label="Type"
@@ -26,6 +18,7 @@
                 dense
                 hide-details
                 :items="['ISSUANCE', 'CONDEMN', 'RETURN', 'LOST']"
+                v-model="selected_transaction.type"
             ></v-select>
         </v-card-actions>
     </v-card>
@@ -33,14 +26,17 @@
 
 <script>
     import { useLocationStore } from '@/stores/location'
+    import { useTransactionStore } from '@/stores/transaction'
     import { storeToRefs } from 'pinia'
 
     export default {
         setup() {
             const { location_select_items } = storeToRefs(useLocationStore())
+            const { selected_transaction } = storeToRefs(useTransactionStore())
 
             return {
-                location_select_items
+                location_select_items,
+                selected_transaction
             }
         },
     }

@@ -34,8 +34,28 @@ export const useTransactionStore = defineStore('transaction', () => {
         const res = await transactionApi.store(data)
         if(res.status) {
             transaction.insert(res.data)
+            return res.data
         } else {
             transaction.error(res.data)
+            return null
+        }
+    }
+
+    async function addTransactionItem(data) {
+        if(!transaction.selected_transaction.id) {
+            transaction.selected_transaction = await createTransaction(transaction.selected_transaction)
+        }
+
+        if(transaction.selected_transaction.id) {
+            const res = await transactionApi.addItem(data, transaction.selected_transaction.id)
+            if(res.status) {
+                transaction.selected_transaction.items.push(res.data)
+                transaction.transaction_loading = false
+                return res.data
+            } else {
+                transaction.error(res.data)
+                return null
+            }
         }
     }
 
@@ -56,7 +76,8 @@ export const useTransactionStore = defineStore('transaction', () => {
         fetchTransactions,
         updateTransaction,
         createTransaction,
-        deleteTransaction
+        deleteTransaction,
+        addTransactionItem
     }
 })
 
@@ -64,9 +85,9 @@ const transactionObject = {
     data: [],
     transaction_loading: false,
     transaction_error: null,
-    selected_transaction: null,
+    selected_transaction: { items: [] },
     init: function () {
-        this.selected_transaction = null
+        this.selected_transaction = { items: [] }
         this.transaction_loading = true
         this.transaction_error = null
     },
@@ -79,12 +100,12 @@ const transactionObject = {
         this.data = data
     },
     update: function(id, data) {
-        this.selected_transaction = null
+        this.selected_transaction = { items: [] }
         this.success([...updateArrayByProperty(this.data, 'id', id, data)])
     },
     insert: function(data) {
         this.data.unshift(data)
-        this.selected_transaction = null
+        this.selected_transaction = { items: [] }
     },
     delete: function(id) {
         const index = this.data.findIndex(m => m.id == id)

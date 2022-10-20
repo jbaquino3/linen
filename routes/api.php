@@ -79,6 +79,7 @@ Route::group(['prefix' => 'transaction'], function () {
     Route::get('/', [TransactionController::class, 'index']);
     Route::get('{id}', [TransactionController::class, 'read']);
     Route::post('/', [TransactionController::class, 'store']);
+    Route::post('{id}', [TransactionController::class, 'addItem']);
     Route::put('{id}', [TransactionController::class, 'update']);
     Route::delete('{id}', [TransactionController::class, 'delete']);
 });
