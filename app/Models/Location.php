@@ -24,13 +24,13 @@ class Location extends Model {
         });
 
         static::creating(function ($model) {
-            $model->created_by = "2010743-create";
+            $model->created_by = "2010743";
 
             return $model;
         });
 
         static::updating(function ($model) {
-            $model->updated_by = "2010743-update";
+            $model->updated_by = "2010743";
 
             return $model;
         });

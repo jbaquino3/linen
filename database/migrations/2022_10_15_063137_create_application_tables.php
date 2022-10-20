@@ -147,7 +147,7 @@ return new class extends Migration
         Schema::create($this->schema . "." . "request_remarks", function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string('remarks');
-            $table->string('remarks_by');
+            $table->string('remarks_by')->nullable();
             $table->ulid('request_id');
             $table->timestamps();
             $table->softDeletes();
