@@ -12,38 +12,7 @@ class ProductController extends Controller
         $products = Product::all();
 
         for($i=0; $i<sizeof($products); $i++) {
-            $stock_numbers_available = $products[$i]->stock_numbers;
-            $quantity_issued = 0;
-            $quantity_condemned = 0;
-            $quantity_lost = 0;
-            $quantity_returned = 0;
-
-            $issued = TransactionItem::leftJoin((config("app.debug") ? "dev" : "dbo") . ".transactions", "transaction_items.transaction_id", "=", "transactions.id")
-                ->where("transaction_items.product_bulk_id", $products[$i]->bulk_id)
-                ->get();
-
-            foreach($issued as $issue) {
-                if($issue->type == "ISSUANCE") {
-                    $stock_numbers_available = array_values(array_diff($stock_numbers_available, $issue->stock_numbers));
-                    $quantity_issued += $issue->quantity;
-                } else if($issue->type == "CONDEMN") {
-                    $quantity_condemned += $issue->quantity;
-                } else if($issue->type == "LOST") {
-                    $quantity_lost += $issue->quantity;
-                } else if($issue->type == "RETURN") {
-                    $stock_numbers_available = array_merge($stock_numbers_available, $issue->stock_numbers);
-                    $quantity_returned += $issue->quantity;
-                }
-                
-            }
-
-            sort($stock_numbers_available);
-            
-            $products[$i]->stock_numbers_available = $stock_numbers_available;
-            $products[$i]->quantity_issued = $quantity_issued;
-            $products[$i]->quantity_condemned = $quantity_condemned;
-            $products[$i]->quantity_lost = $quantity_lost;
-            $products[$i]->quantity_returned = $quantity_returned;
+            $products[$i] = $this->addAttributes($products[$i]);
         }
 
         return response()->json($products);
@@ -52,7 +21,7 @@ class ProductController extends Controller
     public function read(Request $request, $id) {
         $product = Product::find($id);
 
-        return response()->json($product);
+        return response()->json($this->addAttributes($product->fresh()));
     }
 
     public function store(Request $request) {
@@ -68,14 +37,14 @@ class ProductController extends Controller
             "stock_numbers" => $request->stock_numbers
         ]);
 
-        return response()->json($product->fresh(), 201);
+        return response()->json($this->addAttributes($product->fresh()), 201);
     }
 
     public function update(Request $request, $id) {
         $product = Product::find($id);
         $updated = $product->update($request->all());
 
-        return response()->json($product->fresh());
+        return response()->json($this->addAttributes($product->fresh()));
     }
 
     public function delete(Request $request, $id) {
@@ -85,5 +54,42 @@ class ProductController extends Controller
         $deleted = $product->delete();
 
         return response()->json($deleted);
+    }
+
+    private function addAttributes(Product $product) {
+        $stock_numbers_available = $product->stock_numbers;
+        $quantity_issued = 0;
+        $quantity_condemned = 0;
+        $quantity_lost = 0;
+        $quantity_returned = 0;
+
+        $issued = TransactionItem::leftJoin((config("app.debug") ? "dev" : "dbo") . ".transactions", "transaction_items.transaction_id", "=", "transactions.id")
+            ->where("transaction_items.product_bulk_id", $product->bulk_id)
+            ->get();
+
+        foreach($issued as $issue) {
+            if($issue->type == "ISSUANCE") {
+                $stock_numbers_available = array_values(array_diff($stock_numbers_available, $issue->stock_numbers));
+                $quantity_issued += $issue->quantity;
+            } else if($issue->type == "CONDEMN") {
+                $quantity_condemned += $issue->quantity;
+            } else if($issue->type == "LOST") {
+                $quantity_lost += $issue->quantity;
+            } else if($issue->type == "RETURN") {
+                $stock_numbers_available = array_merge($stock_numbers_available, $issue->stock_numbers);
+                $quantity_returned += $issue->quantity;
+            }
+            
+        }
+
+        sort($stock_numbers_available);
+        
+        $product->stock_numbers_available = $stock_numbers_available;
+        $product->quantity_issued = $quantity_issued;
+        $product->quantity_condemned = $quantity_condemned;
+        $product->quantity_lost = $quantity_lost;
+        $product->quantity_returned = $quantity_returned;
+
+        return $product;
     }
 }
