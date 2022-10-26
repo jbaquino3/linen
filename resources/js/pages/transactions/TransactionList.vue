@@ -62,11 +62,13 @@
     import { onMounted, ref } from 'vue'
     import { useTransactionStore } from '@/stores/transaction'
     import { storeToRefs } from 'pinia'
+    import { useRouter } from '@/plugins/UseRouter'
     import { mdiPlus } from '@mdi/js'
 
     export default {
         setup() {
             const transactionStore = useTransactionStore()
+            const router = useRouter()
             const {
                 computed_transactions,
                 transaction_loading,
@@ -87,6 +89,7 @@
 
             function openEdit(item) {
                 selected_transaction.value = Object.assign({}, item)
+                router.push("/auth/transactions/items")
             }
 
             function destroy(item) {
