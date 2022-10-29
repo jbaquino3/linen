@@ -6,7 +6,7 @@
             {{transaction_error}}
         </v-alert>
 
-        <div class="d-flex">
+        <div>
             <div>
                 <issuance-form></issuance-form>
             </div>

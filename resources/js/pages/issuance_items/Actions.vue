@@ -1,5 +1,5 @@
 <template>
-    <v-card flat>
+    <v-card flat class="no-print">
         <v-card-actions>
             <v-select
                 label="Ward/Office"
@@ -9,17 +9,6 @@
                 hide-details
                 :items="location_select_items"
                 v-model="selected_transaction.location_id"
-                :disabled="!!selected_transaction.id"
-            ></v-select>
-
-            <v-select
-                label="Type"
-                class="shrink mr-2"
-                outlined
-                dense
-                hide-details
-                :items="['ISSUANCE', 'CONDEMN', 'RETURN', 'LOST']"
-                v-model="selected_transaction.type"
                 :disabled="!!selected_transaction.id"
             ></v-select>
         </v-card-actions>

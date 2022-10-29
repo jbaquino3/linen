@@ -16,14 +16,14 @@ export default [
                 component: () => import(/* webpackPrefetch: true */ "@/pages/requests"),
             },
             {
-                path: "transactions",
-                name: "Transactions",
-                component: () => import(/* webpackPrefetch: true */ "@/pages/transactions"),
+                path: "issuances",
+                name: "Issuances",
+                component: () => import(/* webpackPrefetch: true */ "@/pages/issuances"),
             },
             {
-                path: "transactions/items",
-                name: "Transactions Items",
-                component: () => import(/* webpackPrefetch: true */ "@/pages/transaction_items"),
+                path: "issuances/items",
+                name: "Issuance Items",
+                component: () => import(/* webpackPrefetch: true */ "@/pages/issuance_items"),
             },
             {
                 path: "locations",

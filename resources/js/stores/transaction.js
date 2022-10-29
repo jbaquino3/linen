@@ -15,7 +15,7 @@ export const useTransactionStore = defineStore('transaction', () => {
 
     async function fetchTransactions() {
         transaction.init()
-        const res = await transactionApi.index()
+        const res = await transactionApi.index({type: 'ISSUANCE'})
         res.status ? transaction.success(res.data) : transaction.error(res.data)
     }
 
@@ -43,8 +43,10 @@ export const useTransactionStore = defineStore('transaction', () => {
 
     async function addTransactionItem(data) {
         if(!transaction.selected_transaction.id) {
+            transaction.selected_transaction.type = "ISSUANCE"
             transaction.selected_transaction = await createTransaction(transaction.selected_transaction)
         }
+
 
         if(transaction.selected_transaction.id) {
             const res = await transactionApi.addItem(data, transaction.selected_transaction.id)

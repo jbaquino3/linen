@@ -41,6 +41,9 @@
         .no-print {
             display: none !important;
         }
+        .no-break {
+            page-break-inside: avoid;
+        }
     }
 
     .v-application {

@@ -8,7 +8,7 @@
             v-model="filters"
             @search="s => search=s"
             @reload="reload"
-            @add="$router.push('/auth/transactions/items')"
+            @add="$router.push('/auth/issuances/items')"
         ></table-filters>
 
         <v-alert v-if="transaction_error" type="error" text class="mt-2">
@@ -89,7 +89,7 @@
 
             function openEdit(item) {
                 selected_transaction.value = Object.assign({}, item)
-                router.push("/auth/transactions/items")
+                router.push("/auth/issuances/items")
             }
 
             function destroy(item) {

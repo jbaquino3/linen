@@ -2,8 +2,8 @@ import {_get, _post, _put, _delete} from './commons'
 
 const resource = "transaction"
 
-export const index = async () => {
-    return await _get(`/api/${resource}`)
+export const index = async (params) => {
+    return await _get(`/api/${resource}`, params)
 }
 
 export const read = async (id) => {
