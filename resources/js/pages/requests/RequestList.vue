@@ -89,7 +89,7 @@
                         <div class="mr-1">
                             <v-btn v-if="item.status=='PENDING'" small dark color="yellow darken-2" @click="process(item)">Process</v-btn>
                             <v-btn v-if="item.status=='PROCESSING'" small dark color="blue" @click="ready(item)">Ready</v-btn>
-                            <v-btn v-if="item.status=='READY FOR PICKUP'" small dark color="green">Issue</v-btn>
+                            <v-btn v-if="item.status=='READY FOR PICKUP'" small dark color="green" @click="issue(item)">Issue</v-btn>
                             <v-btn v-if="item.status=='ISSUED'" small dark color="purple">Print</v-btn>
                         </div>
                         <div class="mr-1">
@@ -105,12 +105,15 @@
 <script>
     import { onMounted, ref } from 'vue'
     import { useRequestStore } from '@/stores/request'
+    import { useTransactionStore } from '@/stores/transaction'
     import { storeToRefs } from 'pinia'
+    import { useRouter } from '@/plugins/UseRouter'
     import { mdiPlus, mdiAccount, mdiCalendar } from '@mdi/js'
 
     export default {
         setup() {
             const requestStore = useRequestStore()
+            const { selected_transaction } = storeToRefs(useTransactionStore())
             const {
                 computed_requests,
                 requests_loading,
@@ -122,6 +125,7 @@
                 filterable
             } = storeToRefs(requestStore)
             const search = ref("")
+            const router = useRouter()
 
             onMounted(() => {
                 reload()
@@ -144,6 +148,11 @@
                 requestStore.processRequest(item.id)
             }
 
+            function issue(item) {
+                selected_transaction.value.location_id = item.location_id
+                router.push("/auth/issuances/items")
+            }
+
             function ready(item) {
                 requestStore.readyRequest(item.id)
             }
@@ -162,6 +171,7 @@
                 reload,
                 process,
                 ready,
+                issue,
                 ...icons
             }
         },
