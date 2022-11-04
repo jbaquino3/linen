@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Request extends Model {
     use HasUlids, SoftDeletes;
 
+    protected static function booted() {
+        static::addGlobalScope('order', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $builder->orderBy('requested_at', 'desc');
+        });
+    }
+
     protected $fillable = [
         'name',
         'quantity',
@@ -28,7 +34,6 @@ class Request extends Model {
 
     protected $hidden = [
         'transaction_id',
-        'requested_by',
         'processed_by',
         'prepared_by',
         'issued_by',
@@ -40,11 +45,11 @@ class Request extends Model {
     protected $with = ['transaction', 'remarks'];
     protected $casts = [
         "quantity" => "float",
-        "requested_at" => "datetime:Y-m-d H:i:s",
-        "processed_at" => "datetime:Y-m-d H:i:s",
-        "prepared_at" => "datetime:Y-m-d H:i:s",
-        "issued_at" => "datetime:Y-m-d H:i:s",
-        "cancelled_at" => "datetime:Y-m-d H:i:s",
+        "requested_at" => "datetime:Y-m-d g:i A",
+        "processed_at" => "datetime:Y-m-d g:i A",
+        "prepared_at" => "datetime:Y-m-d g:i A",
+        "issued_at" => "datetime:Y-m-d g:i A",
+        "cancelled_at" => "datetime:Y-m-d g:i A",
     ];
 
     protected $appends = [ 'requested_by_name', 'processed_by_name', 'prepared_by_name', 'issued_by_name', 'cancelled_by_name' ];

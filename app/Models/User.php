@@ -29,8 +29,9 @@ class User extends Authenticatable
         'role'
     ];
 
-    protected $hidden = [ 'password', 'remember_token', 'location_id', 'created_at', 'updated_at', 'deleted_at' ];
+    protected $hidden = [ 'password', 'remember_token', 'created_at', 'updated_at', 'deleted_at' ];
     protected $casts = [ 'email_verified_at' => 'datetime' ];
+    protected $appends = [ 'location_name', 'location_type' ];
 
     public function getIncrementing() {
         return false;
@@ -40,9 +41,11 @@ class User extends Authenticatable
         return 'string';
     }
 
-    protected function location(): Attribute {
-        return Attribute::make(
-            get: fn ($value, $attributes) => Location::find($attributes['location_id'])->name
-        );
+    public function getLocationNameAttribute() {
+        return $this->attributes['location_id'] ? Location::find($this->attributes['location_id'])->name : null;
+    }
+
+    public function getLocationTypeAttribute() {
+        return $this->attributes['location_id'] ? Location::find($this->attributes['location_id'])->type : null;
     }
 }
