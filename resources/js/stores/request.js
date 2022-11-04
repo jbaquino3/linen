@@ -64,6 +64,26 @@ export const useRequestStore = defineStore('request', () => {
             requests.error(res.data)
         }
     }
+
+    async function processRequest(id) {
+        requests.init()
+        const res = await requestApi.processRequest(id)
+        if(res.status) {
+            fetchRequests()
+        } else {
+            requests.error(res.data)
+        }
+    }
+
+    async function readyRequest(id) {
+        requests.init()
+        const res = await requestApi.readyRequest(id)
+        if(res.status) {
+            fetchRequests()
+        } else {
+            requests.error(res.data)
+        }
+    }
   
     return {
         ...toRefs(requests),
@@ -75,7 +95,9 @@ export const useRequestStore = defineStore('request', () => {
         updateRequest,
         createRequest,
         deleteRequest,
-        createRemark
+        createRemark,
+        processRequest,
+        readyRequest
     }
 })
 

@@ -18,6 +18,14 @@ export const createRemark = async (data) => {
     return await _post(`/api/${resource}/remarks`, data)
 }
 
+export const processRequest = async (id) => {
+    return await _put(`/api/${resource}/process/${id}`)
+}
+
+export const readyRequest = async (id) => {
+    return await _put(`/api/${resource}/ready/${id}`)
+}
+
 export const update = async (data, id) => {
     return await _put(`/api/${resource}/${id}`, data)
 }

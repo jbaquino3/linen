@@ -90,5 +90,7 @@ Route::group(['prefix' => 'request'], function () {
     Route::post('/', [RequestController::class, 'store']);
     Route::post('remarks', [RequestController::class, 'createRemark']);
     Route::put('{id}', [RequestController::class, 'update']);
+    Route::put('process/{id}', [RequestController::class, 'processRequest']);
+    Route::put('ready/{id}', [RequestController::class, 'readyRequest']);
     Route::delete('{id}', [RequestController::class, 'delete']);
 });

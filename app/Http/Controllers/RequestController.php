@@ -82,4 +82,24 @@ class RequestController extends Controller
 
         return response()->json(true);
     }
+
+    public function processRequest($id) {
+        $request = RequestModel::find($id);
+        $updated = $request->update([
+            "processed_at" => Carbon::now(),
+            "processed_by" => \Auth::id()
+        ]);
+
+        return response()->json($updated);
+    }
+
+    public function readyRequest($id) {
+        $request = RequestModel::find($id);
+        $updated = $request->update([
+            "prepared_at" => Carbon::now(),
+            "prepared_by" => \Auth::id()
+        ]);
+
+        return response()->json($updated);
+    }
 }

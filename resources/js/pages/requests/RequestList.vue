@@ -16,7 +16,7 @@
         </v-alert>
         
         <v-card class="mt-2" flat>
-            <v-data-table :headers="headers" :items="computed_requests" :search="search" :disabled="requests_loading" :loading="requests_loading">
+            <v-data-table :headers="headers" :items="requests_loading ? [] : computed_requests" :search="search" :disabled="requests_loading" :loading="requests_loading">
                 <template v-slot:[`item.location_name`]="{ item }">
                     <div :class="($vuetify.theme.dark ? 'yellow--text' : ' black--text') + ' subtitle-1'">
                         {{item.location_name}} ({{item.location_type}})
@@ -87,8 +87,8 @@
                 <template v-slot:[`item.actions`]="{ item }">
                     <div class="d-flex">
                         <div class="mr-1">
-                            <v-btn v-if="item.status=='PENDING'" small dark color="yellow darken-2">Process</v-btn>
-                            <v-btn v-if="item.status=='PROCESSING'" small dark color="blue">Ready</v-btn>
+                            <v-btn v-if="item.status=='PENDING'" small dark color="yellow darken-2" @click="process(item)">Process</v-btn>
+                            <v-btn v-if="item.status=='PROCESSING'" small dark color="blue" @click="ready(item)">Ready</v-btn>
                             <v-btn v-if="item.status=='READY FOR PICKUP'" small dark color="green">Issue</v-btn>
                             <v-btn v-if="item.status=='ISSUED'" small dark color="purple">Print</v-btn>
                         </div>
@@ -140,6 +140,14 @@
                 requestStore.deleteRequest(item.id)
             }
 
+            function process(item) {
+                requestStore.processRequest(item.id)
+            }
+
+            function ready(item) {
+                requestStore.readyRequest(item.id)
+            }
+
             return {
                 computed_requests,
                 requests_loading,
@@ -152,6 +160,8 @@
                 openRemark,
                 destroy,
                 reload,
+                process,
+                ready,
                 ...icons
             }
         },
