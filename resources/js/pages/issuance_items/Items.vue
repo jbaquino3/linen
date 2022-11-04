@@ -5,7 +5,7 @@
                 <Header></Header>
 
                 <div class="d-flex">
-                    <div>{{location_type}}: {{location_name}}</div>
+                    <div>Ward/Office: {{selected_transaction.location_name}}</div>
                     <v-spacer></v-spacer>
                 </div>
 
