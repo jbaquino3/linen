@@ -121,6 +121,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('quantity', 8, 2)->default(0);
             $table->enum('unit', ['PIECE', 'SPOOL', 'YARD', 'ROLL', 'SACK/BAG']);
+            $table->ulid('location_id');
             $table->ulid('transaction_id')->nullable();
             $table->string('requested_by')->nullable();
             $table->string('processed_by')->nullable();

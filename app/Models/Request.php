@@ -18,6 +18,7 @@ class Request extends Model {
         'name',
         'quantity',
         'unit',
+        'location_id',
         'transaction_id',
         'requested_by',
         'processed_by',

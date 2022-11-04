@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Request as RequestModel;
 use App\Models\RequestRemark;
-use App\Models\User;
+use App\Models\Location;
 use Carbon\Carbon;
 
 class RequestController extends Controller
@@ -21,11 +21,10 @@ class RequestController extends Controller
     }
 
     private function addAttributes(RequestModel $request) {
-        $user = User::find($request->requested_by);
-        if($user) {
-            $request->location_id = $user->location_id;
-            $request->location_name = $user->location_name;
-            $request->location_type = $user->location_type;
+        $location = Location::find($request->location_id);
+        if($location) {
+            $request->location_name = $location->name;
+            $request->location_type = $location->type;
         }
 
         return $request;
