@@ -86,11 +86,15 @@
 
                 <template v-slot:[`item.actions`]="{ item }">
                     <div class="d-flex">
-                        <v-btn v-if="item.status=='PENDING'" small dark color="yellow darken-2">Process</v-btn>
-                        <v-btn v-if="item.status=='PROCESSING'" small dark color="blue">Ready</v-btn>
-                        <v-btn v-if="item.status=='READY FOR PICKUP'" small dark color="green">Issue</v-btn>
-                        <v-btn v-if="item.status=='ISSUED'" small dark color="purple">Print</v-btn>
-                        <v-btn class="ml-1" small dark color="red">Cancel</v-btn>
+                        <div class="mr-1">
+                            <v-btn v-if="item.status=='PENDING'" small dark color="yellow darken-2">Process</v-btn>
+                            <v-btn v-if="item.status=='PROCESSING'" small dark color="blue">Ready</v-btn>
+                            <v-btn v-if="item.status=='READY FOR PICKUP'" small dark color="green">Issue</v-btn>
+                            <v-btn v-if="item.status=='ISSUED'" small dark color="purple">Print</v-btn>
+                        </div>
+                        <div class="mr-1">
+                            <table-delete-button @delete="destroy(item)"></table-delete-button>
+                        </div>
                     </div>
                 </template>
             </v-data-table>

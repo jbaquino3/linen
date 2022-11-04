@@ -64,16 +64,22 @@ class RequestController extends Controller
     }
 
     public function update(Request $request, $id) {
-        $request = RequestModel::find($id);
-        $updated = $request->update($request->all());
+        $request_model = RequestModel::find($id);
+        $updated = $request_model->update($request->all());
 
         return response()->json($updated);
     }
 
     public function delete(Request $request, $id) {
-        $request = RequestModel::find($id);
-        $deleted = $request->delete();
+        $request_model = RequestModel::find($id);
+        if($request_model->requested_by == \Auth::id()) {
+            $deleted = $request_model->delete();
+        } else {
+            $request_model->cancelled_at = Carbon::now();
+            $request_model->cancelled_by = \Auth::id();
+            $request_model->saveQuietly();
+        }
 
-        return response()->json($deleted);
+        return response()->json(true);
     }
 }
