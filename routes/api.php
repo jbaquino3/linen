@@ -88,6 +88,7 @@ Route::group(['prefix' => 'request'], function () {
     Route::get('/', [RequestController::class, 'index']);
     Route::get('{id}', [RequestController::class, 'read']);
     Route::post('/', [RequestController::class, 'store']);
+    Route::post('remarks', [RequestController::class, 'createRemark']);
     Route::put('{id}', [RequestController::class, 'update']);
     Route::delete('{id}', [RequestController::class, 'delete']);
 });

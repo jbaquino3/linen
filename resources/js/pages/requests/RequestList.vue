@@ -80,7 +80,7 @@
                                 </div>
                             </div>
                         </div>
-                        <v-btn text color="primary" x-small width="75">Add Remark</v-btn>
+                        <v-btn text color="primary" x-small width="75" @click="openRemark(item)">Add Remark</v-btn>
                     </div>
                 </template>
 
@@ -111,6 +111,7 @@
                 computed_requests,
                 requests_loading,
                 request_dialog,
+                remark_dialog,
                 requests_error,
                 selected_request,
                 filters,
@@ -126,9 +127,9 @@
                 requestStore.fetchRequests()
             }
 
-            function openEdit(item) {
+            function openRemark(item) {
                 selected_request.value = Object.assign({}, item)
-                request_dialog.value = true
+                remark_dialog.value = true
             }
 
             function destroy(item) {
@@ -144,7 +145,7 @@
                 search,
                 filters,
                 filterable,
-                openEdit,
+                openRemark,
                 destroy,
                 reload,
                 ...icons

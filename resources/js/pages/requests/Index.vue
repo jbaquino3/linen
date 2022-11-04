@@ -2,6 +2,7 @@
     <div>
         <request-list></request-list>
         <request-dialog></request-dialog>
+        <remark-dialog></remark-dialog>
     </div>
 </template>
 
@@ -16,7 +17,8 @@
 
         components: {
             RequestList: () => import('./RequestList'),
-            RequestDialog: () => import('./RequestDialog')
+            RequestDialog: () => import('./RequestDialog'),
+            RemarkDialog: () => import('./RemarkDialog')
         }
     }
 </script>

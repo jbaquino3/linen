@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Request as RequestModel;
+use App\Models\RequestRemark;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -50,6 +51,16 @@ class RequestController extends Controller
         ]);
 
         return response()->json($this->addAttributes($request_model->fresh()), 201);
+    }
+
+    public function createRemark(Request $request) {
+        $remark = RequestRemark::create([
+            "request_id" => $request->request_id,
+            "remarks" => $request->remarks,
+            "remarks_by" => $request->remarks_by
+        ]);
+
+        return response()->json($remark, 201);
     }
 
     public function update(Request $request, $id) {

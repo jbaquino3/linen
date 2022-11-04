@@ -56,7 +56,6 @@
 
 <script>
     import { useRequestStore } from '@/stores/request'
-    import { useStorageStore } from '@/stores/storage'
     import { storeToRefs } from 'pinia'
     import { mdiClose } from '@mdi/js'
     import { ref, watch, onMounted } from 'vue'
@@ -65,9 +64,7 @@
         setup() {
             const requestStore = useRequestStore()
             const { request_dialog, selected_request, dialog_loading, dialog_error } = storeToRefs(requestStore)
-            const { storage_select_items } = storeToRefs(useStorageStore())
             const request = ref({})
-            const date_menu = ref(false)
 
             function closeDialog() {
                 request_dialog.value = false
@@ -104,8 +101,6 @@
                 dialog_loading,
                 dialog_error,
                 selected_request,
-                date_menu,
-                storage_select_items,
                 closeDialog,
                 save,
                 ...icons

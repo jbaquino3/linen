@@ -9,6 +9,7 @@ const requestFilters = useFilters()
 export const useRequestStore = defineStore('request', () => {
     const requests = reactive(requestsObject)
     const dialog = reactive(dialogObject)
+    const remark = reactive(remarkObject)
     const filter = getFilterObject()
     const computed_requests = computed(() => requestFilters.applyFilter(requests.data, filter.filterable, filter.filters))
 
@@ -42,6 +43,18 @@ export const useRequestStore = defineStore('request', () => {
         }
     }
 
+    async function createRemark(data) {
+        remark.init()
+        const res = await requestApi.createRemark(data)
+        if(res.status) {
+            fetchRequests()
+            remark.success()
+        } else {
+            remark.error(res.data)
+        }
+        return res
+    }
+
     async function deleteRequest(id) {
         requests.init()
         const res = await requestApi.destroy(id)
@@ -55,12 +68,14 @@ export const useRequestStore = defineStore('request', () => {
     return {
         ...toRefs(requests),
         ...toRefs(dialog),
+        ...toRefs(remark),
         ...toRefs(filter),
         computed_requests,
         fetchRequests,
         updateRequest,
         createRequest,
-        deleteRequest
+        deleteRequest,
+        createRemark
     }
 })
 
@@ -142,6 +157,24 @@ const dialogObject = {
     success: function() {
         this.dialog_loading = false
         this.request_dialog = false
+    }
+}
+
+const remarkObject = {
+    remark_dialog: false,
+    remark_loading: false,
+    remark_error: null,
+    init: function () {
+        this.remark_loading = true
+        this.remark_error = null
+    },
+    error: function(err) {
+        this.remark_loading = false
+        this.remark_error = err
+    },
+    success: function() {
+        this.remark_loading = false
+        this.remark_dialog = false
     }
 }
 
