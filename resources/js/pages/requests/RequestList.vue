@@ -90,7 +90,7 @@
                             <v-btn v-if="item.status=='PENDING'" small dark color="yellow darken-2" @click="process(item)">Process</v-btn>
                             <v-btn v-if="item.status=='PROCESSING'" small dark color="blue" @click="ready(item)">Ready</v-btn>
                             <v-btn v-if="item.status=='READY FOR PICKUP'" small dark color="green" @click="issue(item)">Issue</v-btn>
-                            <v-btn v-if="item.status=='ISSUED'" small dark color="purple">Print</v-btn>
+                            <v-btn v-if="item.status=='ISSUED'" small :dark="!!item.transaction" color="purple" :disabled="!item.transaction" @click="openPrint(item)">Print</v-btn>
                         </div>
                         <div class="mr-1">
                             <table-delete-button @delete="destroy(item)"></table-delete-button>
@@ -113,7 +113,7 @@
     export default {
         setup() {
             const requestStore = useRequestStore()
-            const { selected_transaction } = storeToRefs(useTransactionStore())
+            const { selected_transaction, data } = storeToRefs(useTransactionStore())
             const {
                 computed_requests,
                 requests_loading,
@@ -148,6 +148,11 @@
                 requestStore.processRequest(item.id)
             }
 
+            function openPrint(item) {
+                selected_transaction.value = item.transaction
+                router.push("/auth/issuances/items")
+            }
+
             function issue(item) {
                 selected_transaction.value.location_id = item.location_id
                 selected_transaction.value.location_name = item.location_name
@@ -173,6 +178,7 @@
                 process,
                 ready,
                 issue,
+                openPrint,
                 ...icons
             }
         },

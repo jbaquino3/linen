@@ -3,7 +3,7 @@
         <table-filters
             :filterable="filterable"
             :actions="[
-                {text: 'New Transaction', color: 'primary', emit: 'add', icon: mdiPlus}
+                {text: 'New Issuance', color: 'primary', emit: 'add', icon: mdiPlus}
             ]"
             v-model="filters"
             @search="s => search=s"
