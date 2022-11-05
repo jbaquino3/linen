@@ -81,6 +81,7 @@ Route::group(['prefix' => 'transaction'], function () {
     Route::post('/', [TransactionController::class, 'store']);
     Route::post('{id}', [TransactionController::class, 'addItem']);
     Route::put('{id}', [TransactionController::class, 'update']);
+    Route::put('finalize/{id}', [TransactionController::class, 'finalize']);
     Route::delete('{id}', [TransactionController::class, 'delete']);
 });
 

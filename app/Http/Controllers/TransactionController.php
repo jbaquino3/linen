@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
+use App\Models\Request as RequestModel;
+use Carbon\Carbon;
 
 class TransactionController extends Controller
 {
@@ -48,6 +50,26 @@ class TransactionController extends Controller
         $updated = $transaction->update($request->all());
 
         return response()->json($updated);
+    }
+
+    public function finalize(Request $request, $id) {
+        $transaction = Transaction::find($id);
+
+        $updated = $transaction->update([
+            "is_final" => true
+        ]);
+
+        $requests_update = RequestModel::where("location_id", $transaction->location_id)
+            ->whereNotNull("prepared_at")
+            ->whereNull("issued_at")
+            ->whereNull("cancelled_at")
+            ->update([
+                "transaction_id" => $transaction->id,
+                "issued_at" => Carbon::now(),
+                "issued_by" => $request->user() ? $request->user()->employeeid : null
+            ]);
+
+        return response()->json($transaction->fresh());
     }
 
     public function delete(Request $request, $id) {

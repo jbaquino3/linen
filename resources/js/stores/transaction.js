@@ -29,6 +29,17 @@ export const useTransactionStore = defineStore('transaction', () => {
         }
     }
 
+    async function finalizeTransaction() {
+        const res = await transactionApi.finalize(transaction.selected_transaction.id)
+        if(res.status) {
+            transaction.selected_transaction = res.data
+            transaction.update(transaction.selected_transaction.id, res.data)
+        } else {
+            transaction.error(res.data)
+        }
+        return res
+    }
+
     async function createTransaction(data) {
         transaction.init()
         const res = await transactionApi.store(data)
@@ -79,7 +90,8 @@ export const useTransactionStore = defineStore('transaction', () => {
         updateTransaction,
         createTransaction,
         deleteTransaction,
-        addTransactionItem
+        addTransactionItem,
+        finalizeTransaction
     }
 })
 
@@ -102,7 +114,6 @@ const transactionObject = {
         this.data = data
     },
     update: function(id, data) {
-        this.selected_transaction = { items: [] }
         this.success([...updateArrayByProperty(this.data, 'id', id, data)])
     },
     insert: function(data) {

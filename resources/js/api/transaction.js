@@ -22,6 +22,10 @@ export const update = async (data, id) => {
     return await _put(`/api/${resource}/${id}`, data)
 }
 
+export const finalize = async (id) => {
+    return await _put(`/api/${resource}/finalize/${id}`)
+}
+
 export const destroy = async (id) => {
     return await _delete(`/api/${resource}/${id}`)
 }
