@@ -11,6 +11,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,4 +95,12 @@ Route::group(['prefix' => 'request'], function () {
     Route::put('process/{id}', [RequestController::class, 'processRequest']);
     Route::put('ready/{id}', [RequestController::class, 'readyRequest']);
     Route::delete('{id}', [RequestController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'report'], function () {
+    Route::get('/', [ReportController::class, 'index']);
+    Route::get('{id}', [ReportController::class, 'read']);
+    Route::post('/', [ReportController::class, 'store']);
+    Route::put('{id}', [ReportController::class, 'update']);
+    Route::delete('{id}', [ReportController::class, 'delete']);
 });

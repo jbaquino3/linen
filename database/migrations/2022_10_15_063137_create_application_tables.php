@@ -156,6 +156,30 @@ return new class extends Migration
             $table->index('remarks_by');
             $table->index('request_id');
         });
+
+        Schema::create($this->schema . "." . "reports", function (Blueprint $table) {
+            $table->ulid('id')->primary();
+            $table->ulid('location_id');
+            $table->string('generated_by')->nullable();
+            $table->enum('month', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);
+            $table->year('year');
+            $table->json('headers')->default("[]");
+            $table->timestamps();
+            $table->softDeletes();
+            
+            $table->index('location_id');
+            $table->index('generated_by');
+        });
+
+        Schema::create($this->schema . "." . "report_items", function (Blueprint $table) {
+            $table->ulid('id')->primary();
+            $table->ulid('report_id');
+            $table->json('content')->default("{}");
+            $table->timestamps();
+            $table->softDeletes();
+            
+            $table->index('report_id');
+        });
     }
 
     /**
