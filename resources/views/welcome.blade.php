@@ -15,7 +15,11 @@
 </head>
 <body>
     <div id="app">
-        <App></App>
+        @if (isset($token))
+            <App :token="{{json_encode($token)}}"></App>
+        @else
+            <App></App>
+        @endif
     </div>
 
     <script src="{{ mix('/js/main.js') }}" defer></script>

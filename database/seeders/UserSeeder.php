@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
 
             User::create([
                 "employeeid" => $user->employee_id,
-                "name" => $user->name,
+                "name" => ucwords(strtolower($user->name)),
                 "email" => $user->username,
                 "password" => $user->password ?? \Hash::make(date("Y-m-d")),
                 "location_id" => $location ? $location->id : null,

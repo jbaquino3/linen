@@ -13,13 +13,19 @@
 <script>
     import { useVuetify } from '@/plugins/UseVuetify'
     import { onMounted } from 'vue'
+    import { useAuthStore } from '@/stores/auth'
 
     export default {
-        setup() {
+        setup(props) {
             const vuetify = useVuetify()
+            const authStore = useAuthStore()
 
             onMounted(() => {
                 vuetify.theme.dark = JSON.parse(localStorage.getItem('dark'))
+                if(props.token) {
+                    localStorage.setItem("token", props.token);
+                }
+                authStore.fetchUser()
             })
 
             return {
@@ -29,6 +35,13 @@
 
         components: {
             LandingPage: () => import('@/app/LandingPage')
+        },
+
+        props: {
+            token: {
+                type: String,
+                default: null
+            }
         }
     }
 </script>
