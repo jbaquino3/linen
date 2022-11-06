@@ -163,7 +163,6 @@ return new class extends Migration
             $table->string('generated_by')->nullable();
             $table->enum('month', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);
             $table->year('year');
-            $table->json('headers')->default("[]");
             $table->timestamps();
             $table->softDeletes();
             
@@ -174,11 +173,25 @@ return new class extends Migration
         Schema::create($this->schema . "." . "report_items", function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->ulid('report_id');
-            $table->json('content')->default("{}");
+            $table->string('product_bulk_id');
+            $table->string('name');
+            $table->decimal('unit_cost', 8, 2)->default(0);
+            $table->float('beg_balance')->default(0);
+            $table->float('issued_quantity')->default(0);
+            $table->date('issued_date')->nullable();
+            $table->float('total_issued')->default(0);
+            $table->float('condemned_quantity')->default(0);
+            $table->date('condemned_date')->nullable();
+            $table->float('returned_quantity')->default(0);
+            $table->date('returned_date')->nullable();
+            $table->float('lost_quantity')->default(0);
+            $table->date('lost_date')->nullable();
+            $table->float('ending_balance')->default(0);
             $table->timestamps();
             $table->softDeletes();
             
             $table->index('report_id');
+            $table->index('product_bulk_id');
         });
     }
 

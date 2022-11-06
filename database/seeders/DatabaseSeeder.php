@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             MaterialSeeder::class,
             ProductSeeder::class,
             TransactionSeeder::class,
-            RequestSeeder::class
+            RequestSeeder::class,
+            ReportSeeder::class
         ]);
     }
 }

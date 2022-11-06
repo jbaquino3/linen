@@ -16,16 +16,30 @@ class ReportItem extends Model {
 
     protected $fillable = [
         'report_id',
-        'content'
+        'product_bulk_id',
+        'name',
+        'unit_cost',
+        'beg_balance',
+        'issued_quantity',
+        'issued_date',
+        'total_issued',
+        'condemned_quantity',
+        'condemned_date',
+        'returned_quantity',
+        'returned_date',
+        'lost_quantity',
+        'lost_date',
+        'ending_balance'
     ];
 
-    protected $appends = ["content"];
-
-    public function getContentAttribute() {
-        return json_decode($this->attributes["content"], true);
-    }
-
-    public function setContentAttribute($value) {
-        $this->attributes["content"] = json_encode($value);
-    }
+    protected $casts = [
+        "unit_cost" => "float",
+        "beg_balance" => "float",
+        "issued_quantity" => "float",
+        "total_issued" => "float",
+        "condemned_quantity" => "float",
+        "returned_quantity" => "float",
+        "lost_quantity" => "float",
+        "ending_balance" => "float"
+    ];
 }

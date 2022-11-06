@@ -13,8 +13,8 @@
                                 <th class="text-left" colspan="6">Date:</th>
                             </tr>
                             <tr>
-                                <th rowspan="2" class="font-weight-bold subtitle-2">QUANTITY</th>
-                                <th colspan="8" class="font-weight-bold subtitle-2">UNIT</th>
+                                <th rowspan="2" class="font-weight-bold subtitle-2">DESCRIPTION</th>
+                                <th colspan="8" class="font-weight-bold subtitle-2">QUANTITY</th>
                             </tr>
                             <tr>
                                 <th class="text-center font-weight-bold caption">Unit Price</th>

@@ -18,22 +18,12 @@ class Report extends Model {
         'location_id',
         'generated_by',
         'month',
-        'year',
-        'headers'
+        'year'
     ];
 
     protected $with = ["items"];
-    protected $appends = ["headers"];
 
     public function items() {
         return $this->hasMany(ReportItem::class, 'report_id');
-    }
-
-    public function getHeadersAttribute() {
-        return json_decode($this->attributes["headers"], true);
-    }
-
-    public function setHeadersAttribute($value) {
-        $this->attributes["headers"] = json_encode($value);
     }
 }
