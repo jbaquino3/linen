@@ -14,16 +14,23 @@
     import { useVuetify } from '@/plugins/UseVuetify'
     import { onMounted } from 'vue'
     import { useAuthStore } from '@/stores/auth'
+    import { useRouter, useRoute } from '@/plugins/UseRouter'
 
     export default {
         setup(props) {
             const vuetify = useVuetify()
             const authStore = useAuthStore()
+            const router = useRouter()
+            const route = useRoute()
 
             onMounted(() => {
+                let query = Object.assign({}, route.query)
+                delete query.employeeid
+                router.replace({ query })
+                    
                 vuetify.theme.dark = JSON.parse(localStorage.getItem('dark'))
                 if(props.token) {
-                    localStorage.setItem("token", props.token);
+                    localStorage.setItem("token", props.token)
                 }
                 authStore.fetchUser()
             })

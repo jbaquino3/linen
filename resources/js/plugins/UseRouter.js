@@ -7,3 +7,11 @@ export function useRouter() {
     }
     return instance.proxy.$router
 }
+
+export function useRoute() {
+    const instance = getCurrentInstance()
+    if (!instance) {
+        throw new Error(`useRouter should be called in setup().`)
+    }
+    return instance.proxy.$route
+}
