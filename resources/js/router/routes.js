@@ -50,6 +50,11 @@ export default [
                 name: "Monthly Reports",
                 component: () => import(/* webpackPrefetch: true */ "@/pages/reports"),
             },
+            {
+                path: "reports/view",
+                name: "View Report",
+                component: () => import(/* webpackPrefetch: true */ "@/pages/reports/Report"),
+            },
         ]
     }
 ]

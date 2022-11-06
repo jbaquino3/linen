@@ -45,9 +45,12 @@
                     </div>
                 </template>
 
-                <template v-slot:[`item.actions`]="{  }">
+                <template v-slot:[`item.actions`]="{ item }">
                     <div class="d-flex">
-                        
+                        <v-btn small dark color="primary" @click="view(item)">
+                            <v-icon left>{{mdiPrinter}}</v-icon>
+                            Print
+                        </v-btn>
                     </div>
                 </template>
             </v-data-table>
@@ -59,7 +62,8 @@
     import { onMounted, ref } from 'vue'
     import { useReportStore } from '@/stores/report'
     import { storeToRefs } from 'pinia'
-    import { mdiPlus, mdiAccount, mdiCalendar } from '@mdi/js'
+    import { mdiPlus, mdiAccount, mdiCalendar, mdiPrinter } from '@mdi/js'
+    import { useRouter } from '@/plugins/UseRouter'
 
     export default {
         setup() {
@@ -73,6 +77,7 @@
                 filterable
             } = storeToRefs(reportStore)
             const search = ref("")
+            const router = useRouter()
 
             onMounted(() => {
                 reload()
@@ -80,6 +85,11 @@
 
             function reload() {
                 reportStore.fetchReports()
+            }
+
+            function view(item) {
+                selected_report.value = item
+                router.push("/auth/reports/view")
             }
 
             function destroy(item) {
@@ -96,13 +106,14 @@
                 filterable,
                 destroy,
                 reload,
+                view,
                 ...icons
             }
         },
     }
 
     const icons = {
-        mdiPlus, mdiAccount, mdiCalendar
+        mdiPlus, mdiAccount, mdiCalendar, mdiPrinter
     }
 
     const headers = [

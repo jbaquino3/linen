@@ -1,16 +1,24 @@
 <template>
     <div>
-        <v-btn @click="print">Print</v-btn>
+        <v-card flat class="no-print">
+            <v-card-actions>
+                <v-btn color="primary" @click="print" :dark="!!selected_report" :disabled="!selected_report">
+                    <v-icon left>{{mdiPrinter}}</v-icon>
+                    Print
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+        
         <div ref="printable" class="mt-2">
             <v-card class="pa-0" light tile flat>
                 <v-card-text class="black--text">
                     <Header></Header>
 
-                    <table>
+                    <table v-if="selected_report">
                         <thead>
                             <tr>
-                                <th class="text-left" colspan="3">UNIT/WARD:</th>
-                                <th class="text-left" colspan="6">Date:</th>
+                                <th class="text-left" colspan="6">UNIT/WARD: {{selected_report.location_name}}</th>
+                                <th class="text-left" colspan="3">Date: {{selected_report.month}} {{selected_report.year}}</th>
                             </tr>
                             <tr>
                                 <th rowspan="2" class="font-weight-bold subtitle-2">DESCRIPTION</th>
@@ -28,16 +36,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-center">Patient Gown blue with BGHMC Logo 11 by 12 in.</td>
-                                <td class="text-center">P100.34</td>
-                                <td class="text-center">10</td>
-                                <td class="text-center">2022-11-04</td>
-                                <td class="text-center">20</td>
-                                <td class="text-center">2022-11-05 (5)</td>
-                                <td class="text-center">2022-11-05 (5)</td>
-                                <td class="text-center">10</td>
-                                <td class="text-center">3</td>
+                            <tr v-for="(item) in selected_report.items" :key="item.id">
+                                <td class="text-left">{{item.name}}</td>
+                                <td class="text-center">₱{{item.unit_cost}}</td>
+                                <td class="text-center">{{item.beg_balance}}</td>
+                                <td class="text-center">{{item.issued_date}}</td>
+                                <td class="text-center">{{item.total_issued}}</td>
+                                <td class="text-center">{{item.condemned_date}} <span v-if="item.condemned_date">({{item.condemned_quantity}})</span></td>
+                                <td class="text-center">{{item.returned_date}} <span v-if="item.returned_date">({{item.returned_quantity}})</span></td>
+                                <td class="text-center">{{item.ending_balance}}</td>
+                                <td class="text-center">{{item.lost_date}} <span v-if="item.lost_date">({{item.lost_quantity}})</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -70,21 +78,41 @@
 <script>
     import Header from "./Header"
     import usePrinter from '@/plugins/UsePrinter'
+    import { useReportStore } from '@/stores/report'
+    import { storeToRefs } from 'pinia'
+    import { useRouter } from '@/plugins/UseRouter'
+    import { watchEffect } from 'vue'
+    import { mdiPrinter } from '@mdi/js'
 
     export default {
         setup() {
+            const { selected_report } = storeToRefs(useReportStore())
+            const router = useRouter()
+
+            watchEffect(() => { 
+                if(!selected_report.value) {
+                    router.push("/auth/reports")
+                }
+            })
+
             function print() {
                 usePrinter().print()
             }
 
             return {
-                print
+                selected_report,
+                print,
+                ...icons
             }
         },
 
         components: {
             Header
         }
+    }
+
+    const icons = {
+        mdiPrinter
     }
 </script>
 
