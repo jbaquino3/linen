@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Location;
 use App\Models\Report;
 use App\Models\ReportItem;
+use App\Models\User;
 
 class ReportSeeder extends Seeder
 {
@@ -20,7 +21,7 @@ class ReportSeeder extends Seeder
         ReportItem::truncate();
         Report::truncate();
         
-        for($i=5; $i<10; $i++) {
+        for($i=5; $i<12; $i++) {
             $locations = Location::all();
 
             foreach($locations as $location) {
@@ -31,8 +32,11 @@ class ReportSeeder extends Seeder
                 ]);
 
                 if(sizeof($items) > 0) {
+                    $user = User::where("location_id", $location->id)->first();
                     $report = Report::create([
                         "location_id" => $location->id,
+                        "location_name" => $location->name,
+                        "generated_by" => $user ? $user->employeeid : null,
                         "month" => date("F", strtotime(date("2022-" . $i . "-01"))),
                         "year" => "2022"
                     ]);

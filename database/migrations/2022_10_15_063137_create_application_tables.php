@@ -160,6 +160,7 @@ return new class extends Migration
         Schema::create($this->schema . "." . "reports", function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->ulid('location_id');
+            $table->string("location_name");
             $table->string('generated_by')->nullable();
             $table->enum('month', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);
             $table->year('year');
