@@ -13,3 +13,7 @@ export const read = async (id) => {
 export const destroy = async (id) => {
     return await _delete(`/api/${resource}/${id}`)
 }
+
+export const generate = async (data) => {
+    return await _post(`/api/${resource}/generate`, data)
+}

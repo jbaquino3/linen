@@ -8,6 +8,7 @@ const reportFilters = useFilters()
 
 export const useReportStore = defineStore('report', () => {
     const reports = reactive(reportsObject)
+    const dialog = reactive(dialogObject)
     const filter = getFilterObject()
     const computed_reports = computed(() => reportFilters.applyFilter(reports.data, filter.filterable, filter.filters))
 
@@ -17,6 +18,17 @@ export const useReportStore = defineStore('report', () => {
         reports.init()
         const res = await reportApi.index()
         res.status ? reports.success(res.data) : reports.error(res.data)
+    }
+
+    async function generateReport(data) {
+        dialog.init()
+        const res = await reportApi.generate(data)
+        if(res.status) {
+            reports.insert(res.data)
+            dialog.success()
+        } else {
+            dialog.error(res.data)
+        }
     }
 
     async function deleteReport(id) {
@@ -32,8 +44,10 @@ export const useReportStore = defineStore('report', () => {
     return {
         ...toRefs(reports),
         ...toRefs(filter),
+        ...toRefs(dialog),
         computed_reports,
         fetchReports,
+        generateReport,
         deleteReport
     }
 })
@@ -61,13 +75,36 @@ const reportsObject = {
         this.success([...updateArrayByProperty(this.data, 'id', id, data)])
     },
     insert: function(data) {
-        this.data.unshift(data)
-        this.selected_report = null
+        const item = this.data.find(i => i.id == data.id)
+        if(item) {
+            this.update(data.id, data)
+        } else {
+            this.data.unshift(data)
+            this.selected_report = null
+        }
     },
     delete: function(id) {
         const index = this.data.findIndex(m => m.id == id)
         this.data.splice(index, 1)
         this.reports_loading = false
+    }
+}
+
+const dialogObject = {
+    report_dialog: false,
+    dialog_loading: false,
+    dialog_error: null,
+    init: function () {
+        this.dialog_loading = true
+        this.dialog_error = null
+    },
+    error: function(err) {
+        this.dialog_loading = false
+        this.dialog_error = err
+    },
+    success: function() {
+        this.dialog_loading = false
+        this.report_dialog = false
     }
 }
 

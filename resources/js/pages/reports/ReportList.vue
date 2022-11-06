@@ -8,6 +8,7 @@
             v-model="filters"
             @search="s => search=s"
             @reload="reload"
+            @add="generateReport"
         ></table-filters>
 
         <v-alert v-if="reports_error" type="error" text class="mt-2">
@@ -70,6 +71,7 @@
             const reportStore = useReportStore()
             const {
                 computed_reports,
+                report_dialog,
                 reports_loading,
                 reports_error,
                 selected_report,
@@ -82,6 +84,18 @@
             onMounted(() => {
                 reload()
             })
+
+            function generateReport() {
+                let date = new Date()
+                date.setMonth(date.getMonth()-1)
+
+                selected_report.value = {
+                    month: date.toLocaleString('default', { month: 'long' }),
+                    year: date.getFullYear()
+                }
+
+                report_dialog.value = true
+            }
 
             function reload() {
                 reportStore.fetchReports()
@@ -100,6 +114,7 @@
                 computed_reports,
                 reports_loading,
                 reports_error,
+                generateReport,
                 headers,
                 search,
                 filters,

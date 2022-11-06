@@ -103,8 +103,13 @@ const locationsObject = {
         this.success([...updateArrayByProperty(this.data, 'id', id, data)])
     },
     insert: function(data) {
-        this.data.unshift(data)
-        this.selected_location = null
+        const item = this.data.find(i => i.id == data.id)
+        if(item) {
+            this.update(data.id, data)
+        } else {
+            this.data.unshift(data)
+            this.selected_location = null
+        }
     },
     delete: function(id) {
         const index = this.data.findIndex(m => m.id == id)

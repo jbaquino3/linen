@@ -112,8 +112,13 @@ const productsObject = {
         this.success([...updateArrayByProperty(this.data, 'bulk_id', bulk_id, data)])
     },
     insert: function(data) {
-        this.data.unshift(data)
-        this.selected_product = null
+        const item = this.data.find(i => i.id == data.id)
+        if(item) {
+            this.update(data.id, data)
+        } else {
+            this.data.unshift(data)
+            this.selected_product = null
+        }
     },
     delete: function(bulk_id) {
         const index = this.data.findIndex(m => m.bulk_id == bulk_id)

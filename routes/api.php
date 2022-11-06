@@ -100,7 +100,7 @@ Route::group(['prefix' => 'request'], function () {
 Route::group(['prefix' => 'report'], function () {
     Route::get('/', [ReportController::class, 'index']);
     Route::get('{id}', [ReportController::class, 'read']);
-    Route::post('/', [ReportController::class, 'store']);
+    Route::post('generate', [ReportController::class, 'generate']);
     Route::put('{id}', [ReportController::class, 'update']);
     Route::delete('{id}', [ReportController::class, 'delete']);
 });

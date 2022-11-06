@@ -115,8 +115,13 @@ const materialsObject = {
         this.success([...updateArrayByProperty(this.data, 'stock_number', stock_number, data)])
     },
     insert: function(data) {
-        this.data.unshift(data)
-        this.selected_material = null
+        const item = this.data.find(i => i.id == data.id)
+        if(item) {
+            this.update(data.id, data)
+        } else {
+            this.data.unshift(data)
+            this.selected_material = null
+        }
     },
     delete: function(stock_number) {
         const index = this.data.findIndex(m => m.stock_number == stock_number)
