@@ -44,7 +44,7 @@ axios.interceptors.response.use(
 		/* INTERCEPTS 401 UNAUTHENTICATED, EXPIRES SESSIONS and reloads page */
         if (error.response.status === 401 || error.response.status === 419) {
 			// refresh page
-			router.push('/guest')
+			location.reload()
 		}
 		return Promise.reject(error);
 	}

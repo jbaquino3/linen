@@ -24,7 +24,7 @@ use App\Http\Controllers\ReportController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/auth', function (Request $request) {
+Route::get('/auth', function (Request $request) {
     return $request->user();
 });
 
