@@ -23,6 +23,11 @@ export const useRequestStore = defineStore('request', () => {
         res.status ? requests.success(res.data) : requests.error(res.data)
     }
 
+    async function fetchStats() {
+        const res = await requestApi.stats()
+        return res
+    }
+
     async function updateRequest(data, id) {
         dialog.init()
         const res = await requestApi.update(data, id)
@@ -95,6 +100,7 @@ export const useRequestStore = defineStore('request', () => {
         computed_requests,
         headers,
         fetchRequests,
+        fetchStats,
         updateRequest,
         createRequest,
         deleteRequest,

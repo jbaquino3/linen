@@ -1,5 +1,7 @@
 <template>
     <div>
+        <request-summary no-link></request-summary>
+
         <table-filters
             :filterable="filterable"
             :actions="[
@@ -9,6 +11,7 @@
             @search="s => search=s"
             @reload="reload"
             @add="request_dialog=true"
+            class="mt-2"
         ></table-filters>
 
         <v-alert v-if="requests_error" type="error" text class="mt-2">
@@ -103,13 +106,14 @@
 </template>
 
 <script>
-    import { onMounted, ref, computed } from 'vue'
+    import { onMounted, ref } from 'vue'
     import { useRequestStore } from '@/stores/request'
     import { useAuthStore } from '@/stores/auth'
     import { useTransactionStore } from '@/stores/transaction'
     import { storeToRefs } from 'pinia'
     import { useRouter } from '@/plugins/UseRouter'
     import { mdiPlus, mdiAccount, mdiCalendar } from '@mdi/js'
+    import RequestSummary from './RequestSummary'
 
     export default {
         setup() {
@@ -186,6 +190,10 @@
                 ...icons
             }
         },
+
+        components: {
+            RequestSummary
+        }
     }
 
     const icons = {

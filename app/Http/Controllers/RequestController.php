@@ -25,6 +25,27 @@ class RequestController extends Controller
         return response()->json($requests);
     }
 
+    public function stats(Request $request) {
+        $pending = [];
+        $processing = [];
+        $ready = [];
+        if($request->user()->role == "USER") {
+            $pending = RequestModel::where("location_id", $request->user()->location_id)->whereNull("processed_at")->whereNull("cancelled_at")->count();
+            $processing = RequestModel::where("location_id", $request->user()->location_id)->whereNotNull("processed_at")->whereNull("prepared_at")->count();
+            $ready = RequestModel::where("location_id", $request->user()->location_id)->whereNotNull("prepared_at")->whereNull("issued_at")->count();
+        } else if ($request->user()->role == "ADMIN" || $request->user()->role == "SUPER_ADMIN") {
+            $pending = RequestModel::whereNull("processed_at")->whereNull("cancelled_at")->count();
+            $processing = RequestModel::whereNotNull("processed_at")->whereNull("prepared_at")->count();
+            $ready = RequestModel::whereNotNull("prepared_at")->whereNull("issued_at")->count();
+        }
+
+        return response()->json([
+            "pending" => $pending,
+            "processing" => $processing,
+            "ready" => $ready
+        ]);
+    }
+
     private function addAttributes(RequestModel $request) {
         $location = Location::find($request->location_id);
         if($location) {
