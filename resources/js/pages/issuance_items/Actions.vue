@@ -34,6 +34,7 @@
     import { storeToRefs } from 'pinia'
     import { mdiPrinter } from '@mdi/js'
     import useAlerts from '@/utils/alerts'
+    import usePrinter from '@/plugins/UsePrinter'
 
     export default {
         setup() {
@@ -42,12 +43,12 @@
             const { selected_transaction } = storeToRefs(transactionStore)
 
             function print() {
-                window.print()
+                usePrinter().print(false)
             }
 
             function finalize() {
                 if(selected_transaction.value.is_final) {
-                    window.print()
+                    usePrinter().print(false)
                 } else {
                     useAlerts().alertConfirmation({
                         title: "Issuance Completed?",
