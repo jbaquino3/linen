@@ -20,7 +20,9 @@ class Request extends Model {
                 $model->requested_at = Carbon::now();
             }
 
-            $model->location_id = User::find(\Auth::id())->location_id;
+            if(!$model->location_id) {
+                $model->location_id = User::find(\Auth::id())->location_id;
+            }
 
             return $model;
         });

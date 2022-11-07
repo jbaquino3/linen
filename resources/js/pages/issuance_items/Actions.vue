@@ -2,7 +2,7 @@
     <v-card flat class="no-print">
         <v-card-actions>
             <v-select
-                label="Ward/Office"
+                label="Ward/Unit"
                 class="shrink mr-2"
                 outlined
                 dense

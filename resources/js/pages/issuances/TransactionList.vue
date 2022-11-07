@@ -119,7 +119,7 @@
     const headers = [
         {text: "Date", value: "transaction_date"},
         {text: "Type", value: "type"},
-        {text: "Ward/Office", value: "location_name"},
+        {text: "Ward/Unit", value: "location_name"},
         {text: "Created By", value: "created_by_name"},
         {text: "Actions", value: "actions"},
     ]

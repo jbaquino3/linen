@@ -120,7 +120,7 @@ const headers = computed(() => {
         ]
     } else {
         return [
-            {text: "Ward/Office", value: "location_name"},
+            {text: "Ward/Unit", value: "location_name"},
             {text: "Description", value: "name"},
             {text: "Status", value: "status"},
             {text: "Remarks", value: "remarks"},
@@ -232,7 +232,7 @@ function getFilterObject() {
     const ownFilterObject = Object.assign({}, requestFilters.filtersObject)
     ownFilterObject.addFilterable({text: 'Status', value: 'status', type: 'distinct'})
     if(authStore.user.role != "USER") {
-        ownFilterObject.addFilterable({text: 'Ward/Office', value: 'location_name', type: 'distinct'})
+        ownFilterObject.addFilterable({text: 'Ward/Unit', value: 'location_name', type: 'distinct'})
     }
     return reactive(Object.assign({}, ownFilterObject))
 }
