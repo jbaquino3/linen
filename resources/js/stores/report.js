@@ -3,8 +3,10 @@ import { computed, reactive, watchEffect, toRefs } from 'vue'
 import * as reportApi from '@/api/report'
 import { updateArrayByProperty } from '@/plugins/helpers'
 import useFilters from '../plugins/filter'
+import { useAuthStore } from '@/stores/auth'
 
 const reportFilters = useFilters()
+const authStore = useAuthStore()
 
 export const useReportStore = defineStore('report', () => {
     const reports = reactive(reportsObject)
@@ -46,9 +48,27 @@ export const useReportStore = defineStore('report', () => {
         ...toRefs(filter),
         ...toRefs(dialog),
         computed_reports,
+        headers,
         fetchReports,
         generateReport,
         deleteReport
+    }
+})
+
+const headers = computed(() => {
+    if(authStore.user.role == "USER") {
+        return [
+            {text: "Month/Year", value: "month"},
+            {text: "Generated", value: "generated_by_name"},
+            {text: "Actions", value: "actions"},
+        ]
+    } else {
+        return [
+            {text: "Ward/Unit", value: "location_name"},
+            {text: "Month/Year", value: "month"},
+            {text: "Generated", value: "generated_by_name"},
+            {text: "Actions", value: "actions"},
+        ]
     }
 })
 
@@ -110,8 +130,10 @@ const dialogObject = {
 
 function getFilterObject() {
     const ownFilterObject = Object.assign({}, reportFilters.filtersObject)
-    ownFilterObject.addFilterable({text: 'Ward/Unit', value: 'location_name', type: 'distinct'})
     ownFilterObject.addFilterable({text: 'Month', value: 'month', type: 'distinct'})
     ownFilterObject.addFilterable({text: 'Year', value: 'year', type: 'distinct'})
+    if(authStore.user.role != "USER") {
+        ownFilterObject.addFilterable({text: 'Ward/Unit', value: 'location_name', type: 'distinct'})
+    }
     return reactive(Object.assign({}, ownFilterObject))
 }

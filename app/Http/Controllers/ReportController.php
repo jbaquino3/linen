@@ -10,7 +10,12 @@ use App\Models\ReportItem;
 class ReportController extends Controller
 {
     public function index(Request $request) {
-        $reports = Report::all();
+        $reports = [];
+        if($request->user()->role == "USER") {
+            $reports = Report::where("location_id", $request->user()->location_id)->get();
+        } else if ($request->user()->role == "ADMIN" || $request->user()->role == "SUPER_ADMIN") {
+            $reports = Report::all();
+        }
 
         return response()->json($reports);
     }

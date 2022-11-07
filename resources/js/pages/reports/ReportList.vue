@@ -76,6 +76,7 @@
                 reports_error,
                 selected_report,
                 filters,
+                headers,
                 filterable
             } = storeToRefs(reportStore)
             const search = ref("")
@@ -130,11 +131,4 @@
     const icons = {
         mdiPlus, mdiAccount, mdiCalendar, mdiPrinter
     }
-
-    const headers = [
-        {text: "Ward/Unit", value: "location_name"},
-        {text: "Month/Year", value: "month"},
-        {text: "Generated", value: "generated_by_name"},
-        {text: "Actions", value: "actions"},
-    ]
 </script>

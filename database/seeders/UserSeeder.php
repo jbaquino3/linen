@@ -41,7 +41,7 @@ class UserSeeder extends Seeder
                 "email" => $user->username,
                 "password" => $user->password ?? \Hash::make(date("Y-m-d")),
                 "location_id" => $location ? $location->id : null,
-                "role" => strtoupper($user->role_name)
+                "role" => strtoupper($user->role_name) == "SUPER_ADMIN" ? "ADMIN" : strtoupper($user->role_name)
             ]);
         }
     }

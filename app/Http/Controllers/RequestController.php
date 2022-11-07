@@ -11,7 +11,12 @@ use Carbon\Carbon;
 class RequestController extends Controller
 {
     public function index(Request $request) {
-        $requests = RequestModel::all();
+        $requests = [];
+        if($request->user()->role == "USER") {
+            $requests = RequestModel::where("requested_by", $request->user()->employeeid)->get();
+        } else if ($request->user()->role == "ADMIN" || $request->user()->role == "SUPER_ADMIN") {
+            $requests = RequestModel::all();
+        }
 
         for($i=0; $i<sizeof($requests); $i++) {
             $requests[$i] = $this->addAttributes($requests[$i]);

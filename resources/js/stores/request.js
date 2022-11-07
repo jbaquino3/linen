@@ -3,8 +3,10 @@ import { computed, reactive, watchEffect, toRefs } from 'vue'
 import * as requestApi from '@/api/request'
 import { updateArrayByProperty } from '@/plugins/helpers'
 import useFilters from '../plugins/filter'
+import { useAuthStore } from '@/stores/auth'
 
 const requestFilters = useFilters()
+const authStore = useAuthStore()
 
 export const useRequestStore = defineStore('request', () => {
     const requests = reactive(requestsObject)
@@ -91,6 +93,7 @@ export const useRequestStore = defineStore('request', () => {
         ...toRefs(remark),
         ...toRefs(filter),
         computed_requests,
+        headers,
         fetchRequests,
         updateRequest,
         createRequest,
@@ -98,6 +101,25 @@ export const useRequestStore = defineStore('request', () => {
         createRemark,
         processRequest,
         readyRequest
+    }
+})
+
+const headers = computed(() => {
+    if(authStore.user.role == "USER") {
+        return [
+            {text: "Description", value: "name"},
+            {text: "Status", value: "status"},
+            {text: "Remarks", value: "remarks"},
+            {text: "Actions", value: "actions"}
+        ]
+    } else {
+        return [
+            {text: "Ward/Office", value: "location_name"},
+            {text: "Description", value: "name"},
+            {text: "Status", value: "status"},
+            {text: "Remarks", value: "remarks"},
+            {text: "Actions", value: "actions"}
+        ]
     }
 })
 
@@ -202,7 +224,9 @@ const remarkObject = {
 
 function getFilterObject() {
     const ownFilterObject = Object.assign({}, requestFilters.filtersObject)
-    ownFilterObject.addFilterable({text: 'Ward/Office', value: 'location_name', type: 'distinct'})
     ownFilterObject.addFilterable({text: 'Status', value: 'status', type: 'distinct'})
+    if(authStore.user.role != "USER") {
+        ownFilterObject.addFilterable({text: 'Ward/Office', value: 'location_name', type: 'distinct'})
+    }
     return reactive(Object.assign({}, ownFilterObject))
 }

@@ -28,7 +28,7 @@
                         <div :class="($vuetify.theme.dark ? 'white--text' : ' black--text') + ' subtitle-1 font-italic'">
                             {{item.quantity}} {{item.unit.toLowerCase()}}/s {{item.name}}
                         </div>
-                        <div :class="($vuetify.theme.dark ? 'white--text' : ' grey--text') + ' caption font-italic'">
+                        <div :class="($vuetify.theme.dark ? 'white--text' : ' grey--text') + ' caption font-italic'" v-if="authStore.user.role != 'USER'">
                             <v-icon x-small>{{mdiAccount}}</v-icon>
                             {{item.requested_by_name}}
                         </div>
@@ -80,20 +80,20 @@
                                 </div>
                             </div>
                         </div>
-                        <v-btn text color="primary" x-small width="75" @click="openRemark(item)">Add Remark</v-btn>
+                        <v-btn text color="primary" x-small width="75" @click="openRemark(item)" v-if="authStore.user.role != 'USER'">Add Remark</v-btn>
                     </div>
                 </template>
 
                 <template v-slot:[`item.actions`]="{ item }">
                     <div class="d-flex">
-                        <div class="mr-1">
+                        <div class="mr-1" v-if="authStore.user.role != 'USER'">
                             <v-btn v-if="item.status=='PENDING'" small dark color="yellow darken-2" @click="process(item)">Process</v-btn>
                             <v-btn v-if="item.status=='PROCESSING'" small dark color="blue" @click="ready(item)">Ready</v-btn>
                             <v-btn v-if="item.status=='READY FOR PICKUP'" small dark color="green" @click="issue(item)">Issue</v-btn>
                             <v-btn v-if="item.status=='ISSUED'" small :dark="!!item.transaction" color="purple" :disabled="!item.transaction" @click="openPrint(item)">Print</v-btn>
                         </div>
                         <div class="mr-1">
-                            <table-delete-button @delete="destroy(item)"></table-delete-button>
+                            <table-delete-button :disabled="!!item.processed_at" @delete="destroy(item)"></table-delete-button>
                         </div>
                     </div>
                 </template>
@@ -103,8 +103,9 @@
 </template>
 
 <script>
-    import { onMounted, ref } from 'vue'
+    import { onMounted, ref, computed } from 'vue'
     import { useRequestStore } from '@/stores/request'
+    import { useAuthStore } from '@/stores/auth'
     import { useTransactionStore } from '@/stores/transaction'
     import { storeToRefs } from 'pinia'
     import { useRouter } from '@/plugins/UseRouter'
@@ -112,6 +113,7 @@
 
     export default {
         setup() {
+            const authStore = useAuthStore()
             const requestStore = useRequestStore()
             const { selected_transaction, data } = storeToRefs(useTransactionStore())
             const {
@@ -122,7 +124,8 @@
                 requests_error,
                 selected_request,
                 filters,
-                filterable
+                filterable,
+                headers,
             } = storeToRefs(requestStore)
             const search = ref("")
             const router = useRouter()
@@ -172,6 +175,7 @@
                 search,
                 filters,
                 filterable,
+                authStore,
                 openRemark,
                 destroy,
                 reload,
@@ -187,12 +191,4 @@
     const icons = {
         mdiPlus, mdiAccount, mdiCalendar
     }
-
-    const headers = [
-        {text: "Ward/Office", value: "location_name"},
-        {text: "Description", value: "name"},
-        {text: "Status", value: "status"},
-        {text: "Remarks", value: "remarks"},
-        {text: "Actions", value: "actions"}
-    ]
 </script>
