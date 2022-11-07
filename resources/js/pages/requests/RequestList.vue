@@ -28,7 +28,7 @@
                         <div :class="($vuetify.theme.dark ? 'white--text' : ' black--text') + ' subtitle-1 font-italic'">
                             {{item.quantity}} {{item.unit.toLowerCase()}}/s {{item.name}}
                         </div>
-                        <div :class="($vuetify.theme.dark ? 'white--text' : ' grey--text') + ' caption font-italic'" v-if="authStore.user.role != 'USER'">
+                        <div :class="($vuetify.theme.dark ? 'white--text' : ' grey--text') + ' caption font-italic'">
                             <v-icon x-small>{{mdiAccount}}</v-icon>
                             {{item.requested_by_name}}
                         </div>

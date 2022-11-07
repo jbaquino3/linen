@@ -12,6 +12,14 @@ class Report extends Model {
         static::addGlobalScope('order', function (\Illuminate\Database\Eloquent\Builder $builder) {
             $builder->orderBy('created_at', 'desc');
         });
+
+        static::creating(function ($model) {
+            if(!$model->generated_by) {
+                $model->generated_by = \Auth::check() ? \Auth::id() : null;
+            }
+
+            return $model;
+        });
     }
 
     protected $fillable = [

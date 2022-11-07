@@ -13,7 +13,7 @@ class RequestController extends Controller
     public function index(Request $request) {
         $requests = [];
         if($request->user()->role == "USER") {
-            $requests = RequestModel::where("requested_by", $request->user()->employeeid)->get();
+            $requests = RequestModel::where("location_id", $request->user()->location_id)->get();
         } else if ($request->user()->role == "ADMIN" || $request->user()->role == "SUPER_ADMIN") {
             $requests = RequestModel::all();
         }
@@ -46,8 +46,6 @@ class RequestController extends Controller
             "name" => $request->name,
             "quantity" => $request->quantity,
             "unit" => $request->unit,
-            "requested_at" => Carbon::now(),
-            "requested_by" => "2010743",
             "processed_by" => null,
             "prepared_by" => null,
             "issued_by" => null,
@@ -60,8 +58,7 @@ class RequestController extends Controller
     public function createRemark(Request $request) {
         $remark = RequestRemark::create([
             "request_id" => $request->request_id,
-            "remarks" => $request->remarks,
-            "remarks_by" => $request->remarks_by
+            "remarks" => $request->remarks
         ]);
 
         return response()->json($remark, 201);

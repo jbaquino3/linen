@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Request extends Model {
     use HasUlids, SoftDeletes;
@@ -11,6 +12,17 @@ class Request extends Model {
     protected static function booted() {
         static::addGlobalScope('order', function (\Illuminate\Database\Eloquent\Builder $builder) {
             $builder->orderBy('requested_at', 'desc');
+        });
+
+        static::creating(function ($model) {
+            if(!$model->requested_by) {
+                $model->requested_by = \Auth::check() ? \Auth::id() : null;
+                $model->requested_at = Carbon::now();
+            }
+
+            $model->location_id = User::find(\Auth::id())->location_id;
+
+            return $model;
         });
     }
 

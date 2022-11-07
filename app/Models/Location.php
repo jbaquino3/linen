@@ -24,13 +24,17 @@ class Location extends Model {
         });
 
         static::creating(function ($model) {
-            $model->created_by = "2010743";
+            if(!$model->created_by) {
+                $model->created_by = \Auth::check() ? \Auth::id() : null;
+            }
 
             return $model;
         });
 
         static::updating(function ($model) {
-            $model->updated_by = "2010743";
+            if(!$model->updated_by) {
+                $model->updated_by = \Auth::check() ? \Auth::id() : null;
+            }
 
             return $model;
         });

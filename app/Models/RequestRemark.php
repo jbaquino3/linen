@@ -20,6 +20,20 @@ class RequestRemark extends Model {
         "created_at" => "date:Y-m-d g:i A"
     ];
 
+    protected static function booted() {
+        static::addGlobalScope('order', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $builder->orderBy('created_at', 'asc');
+        });
+
+        static::creating(function ($model) {
+            if(!$model->remarks_by) {
+                $model->remarks_by = \Auth::check() ? \Auth::id() : null;
+            }
+
+            return $model;
+        });
+    }
+
     public function getRemarksByNameAttribute($value) {
         return $this->attributes['remarks_by'] ? User::find($this->attributes['remarks_by'])->name : null;
     }

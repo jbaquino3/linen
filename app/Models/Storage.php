@@ -19,6 +19,24 @@ class Storage extends Model {
     protected $hidden = [ 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at' ]; 
     
     protected $appends = [ 'stock_room_name', 'storage_name', 'name' ];
+
+    protected static function booted() {
+        static::creating(function ($model) {
+            if(!$model->created_by) {
+                $model->created_by = \Auth::check() ? \Auth::id() : null;
+            }
+
+            return $model;
+        });
+
+        static::updating(function ($model) {
+            if(!$model->updated_by) {
+                $model->updated_by = \Auth::check() ? \Auth::id() : null;
+            }
+
+            return $model;
+        });
+    }
     
     public function materials() {
         return $this->hasMany(Material::class, 'storage_id');

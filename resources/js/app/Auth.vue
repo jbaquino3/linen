@@ -55,7 +55,7 @@
 
             <v-spacer></v-spacer>
 
-            <div class="title mr-2 d-none d-sm-flex">{{authStore.user? (authStore.user.name) : ""}}</div>
+            <div class="title mr-2 d-none d-sm-flex">{{authStore.user ? (authStore.user.name) : ""}}</div>
         </v-app-bar>
 
         <v-container fluid>
@@ -69,9 +69,10 @@
     import { ref, computed } from 'vue'
     import { useVuetify } from '@/plugins/UseVuetify'
 
+    const authStore = useAuthStore()
+
     export default {
         setup() {
-            const authStore = useAuthStore()
             const vuetify = useVuetify()
             const drawer = ref(true)
             const selected_menu = ref(0)
@@ -93,14 +94,24 @@
         },
     }
 
-    const menus = [
-        {icon: "dashboard", text: "Dashboard", route: "/auth/dashboard", access: true},
-        {icon: "request", text: "Requests", route: "/auth/requests", access: true},
-        {icon: "transaction", text: "Issuance", route: "/auth/issuances", access: true},
-        {icon: "location", text: "Ward & Offices", route: "/auth/locations", access: true},
-        {icon: "material", text: "Materials", route: "/auth/materials", access: true},
-        {icon: "product", text: "Products", route: "/auth/products", access: true},
-        {icon: "storage", text: "Storage Management", route: "/auth/storages", access: true},
-        {icon: "report", text: "Monthly Reports", route: "/auth/reports", access: true}
-    ]
+    const menus = computed(() => {
+        if(authStore.user && (authStore.user?.role == "ADMIN" || authStore.user?.role == "SUPER_ADMIN")) {
+            return [
+                {icon: "dashboard", text: "Dashboard", route: "/auth/dashboard", access: true},
+                {icon: "request", text: "Requests", route: "/auth/requests", access: true},
+                {icon: "transaction", text: "Issuance", route: "/auth/issuances", access: true},
+                {icon: "location", text: "Ward & Offices", route: "/auth/locations", access: true},
+                {icon: "material", text: "Materials", route: "/auth/materials", access: true},
+                {icon: "product", text: "Products", route: "/auth/products", access: true},
+                {icon: "storage", text: "Storage Management", route: "/auth/storages", access: true},
+                {icon: "report", text: "Monthly Reports", route: "/auth/reports", access: true}
+            ]
+        } else {
+            return [
+                {icon: "dashboard", text: "Dashboard", route: "/auth/dashboard", access: true},
+                {icon: "request", text: "Requests", route: "/auth/requests", access: true},
+                {icon: "report", text: "Monthly Reports", route: "/auth/reports", access: true}
+            ]
+        }
+    })
 </script>
