@@ -50,6 +50,6 @@ class Transaction extends Model {
     }
 
     public function getCreatedByNameAttribute() {
-        return User::find($this->attributes['created_by'])->name;
+        return $this->attributes['created_by'] ? User::find($this->attributes['created_by'])->name : null;
     }
 }

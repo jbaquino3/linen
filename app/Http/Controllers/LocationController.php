@@ -4,13 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Location;
+use App\Models\Product;
+use App\Models\Transaction;
+use App\Models\TransactionItem;
 
 class LocationController extends Controller
 {
     public function index(Request $request) {
         $locations = Location::all();
 
+        for($i=0; $i<sizeof($locations); $i++) {
+            $locations[$i] = $this->addAttributes($locations[$i]);
+        }
+
         return response()->json($locations);
+    }
+
+    private function addAttributes(Location $location) {        
+        $transactions = Transaction::where('location_id', $location->id)->get();
+
+        $location->transaction_count = sizeof($transactions);
+
+        return $location;
     }
 
     public function read(Request $request, $id) {
