@@ -62,6 +62,7 @@
 <script>
     import { onMounted, ref } from 'vue'
     import { useReportStore } from '@/stores/report'
+    import { useAuthStore } from '@/stores/auth'
     import { storeToRefs } from 'pinia'
     import { mdiPlus, mdiAccount, mdiCalendar, mdiPrinter } from '@mdi/js'
     import { useRouter } from '@/plugins/UseRouter'
@@ -69,6 +70,7 @@
     export default {
         setup() {
             const reportStore = useReportStore()
+            const { user } = storeToRefs(useAuthStore())
             const {
                 computed_reports,
                 report_dialog,
@@ -92,7 +94,8 @@
 
                 selected_report.value = {
                     month: date.toLocaleString('default', { month: 'long' }),
-                    year: date.getFullYear()
+                    year: date.getFullYear(),
+                    location_id: user.value.location_id
                 }
 
                 report_dialog.value = true

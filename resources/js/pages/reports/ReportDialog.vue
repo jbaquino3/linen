@@ -19,6 +19,7 @@
                         <v-row>
                             <v-col cols="12">
                                 <v-select
+                                    :disabled="user.role=='USER'"
                                     label="Ward/Unit"
                                     v-model="report.location_id"
                                     :items="location_select_items"
@@ -53,6 +54,7 @@
 
 <script>
     import { useReportStore } from '@/stores/report'
+    import { useAuthStore } from '@/stores/auth'
     import { useLocationStore } from '@/stores/location'
     import { storeToRefs } from 'pinia'
     import { mdiClose } from '@mdi/js'
@@ -63,6 +65,7 @@
             const reportStore = useReportStore()
             const { report_dialog, selected_report, dialog_loading, dialog_error } = storeToRefs(reportStore)
             const { location_select_items } = storeToRefs(useLocationStore())
+            const { user } = storeToRefs(useAuthStore())
             const report = ref({})
 
             function closeDialog() {
@@ -85,6 +88,7 @@
             return {
                 report_dialog,
                 report,
+                user,
                 dialog_loading,
                 dialog_error,
                 selected_report,
