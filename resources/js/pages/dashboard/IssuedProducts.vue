@@ -70,18 +70,41 @@
 
 <script>
     import { useTransactionStore } from '@/stores/transaction'
+    import { useAuthStore } from '@/stores/auth'
     import { storeToRefs } from 'pinia'
-    import { onMounted, ref } from 'vue'
+    import { onMounted, ref, computed } from 'vue'
     import { mdiCalendar, mdiAccount, mdiOfficeBuilding, mdiMagnify } from '@mdi/js'
 
     const transactionStore = useTransactionStore()
+    const authStore = useAuthStore()
 
     export default {
         setup() {
             const { issued_products, issued_loading, issued_error } = storeToRefs(transactionStore)
+            const { user } = storeToRefs(authStore)
             const search = ref("")
 
             onMounted(() => transactionStore.fetchIssuedProducts())
+            const headers = computed(() => {
+                if(user.value.role == "USER") {
+                    return [
+                        {text: "Product", value: "product_name"},
+                        {text: "Transaction", value: "type"},
+                        {text: "", value: "transaction_date", align: " d-none"},
+                        {text: "", value: "location_type", align: " d-none"},
+                        {text: "", value: "created_by_name", align: " d-none"},
+                    ]
+                } else {
+                    return [
+                        {text: "Product", value: "product_name"},
+                        {text: "Area/Unit", value: "location_name"},
+                        {text: "Transaction", value: "type"},
+                        {text: "", value: "transaction_date", align: " d-none"},
+                        {text: "", value: "location_type", align: " d-none"},
+                        {text: "", value: "created_by_name", align: " d-none"},
+                    ]
+                }
+            })
 
             return {
                 issued_products,
@@ -93,15 +116,6 @@
             }
         },
     }
-
-    const headers = [
-        {text: "Product", value: "product_name"},
-        {text: "Area/Unit", value: "location_name"},
-        {text: "Transaction", value: "type"},
-        {text: "", value: "transaction_date", align: " d-none"},
-        {text: "", value: "location_type", align: " d-none"},
-        {text: "", value: "created_by_name", align: " d-none"},
-    ]
 
     const icons = {
         mdiCalendar, mdiAccount, mdiOfficeBuilding, mdiMagnify
