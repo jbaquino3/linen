@@ -78,6 +78,7 @@ Route::group(['prefix' => 'product'], function () {
 
 Route::group(['prefix' => 'transaction'], function () {
     Route::get('/', [TransactionController::class, 'index']);
+    Route::get('issued', [TransactionController::class, 'issued']);
     Route::get('{id}', [TransactionController::class, 'read']);
     Route::post('/', [TransactionController::class, 'store']);
     Route::post('{id}', [TransactionController::class, 'addItem']);

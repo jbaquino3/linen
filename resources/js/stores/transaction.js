@@ -8,6 +8,7 @@ const transactionFilters = useFilters()
 
 export const useTransactionStore = defineStore('transaction', () => {
     const transaction = reactive(transactionObject)
+    const issued = reactive(issuedObject)
     const filter = getFilterObject()
     const computed_transactions = computed(() => transactionFilters.applyFilter(transaction.data, filter.filterable, filter.filters))
 
@@ -17,6 +18,12 @@ export const useTransactionStore = defineStore('transaction', () => {
         transaction.init()
         const res = await transactionApi.index({type: 'ISSUANCE'})
         res.status ? transaction.success(res.data) : transaction.error(res.data)
+    }
+
+    async function fetchIssuedProducts() {
+        issued.init()
+        const res = await transactionApi.issued()
+        res.status ? issued.success(res.data) : issued.error(res.data)
     }
 
     async function updateTransaction(data, id) {
@@ -85,13 +92,15 @@ export const useTransactionStore = defineStore('transaction', () => {
     return {
         ...toRefs(transaction),
         ...toRefs(filter),
+        ...toRefs(issued),
         computed_transactions,
         fetchTransactions,
         updateTransaction,
         createTransaction,
         deleteTransaction,
         addTransactionItem,
-        finalizeTransaction
+        finalizeTransaction,
+        fetchIssuedProducts
     }
 })
 
@@ -129,6 +138,35 @@ const transactionObject = {
         const index = this.data.findIndex(m => m.id == id)
         this.data.splice(index, 1)
         this.transaction_loading = false
+    }
+}
+
+const issuedObject = {
+    issued_products: [],
+    issued_loading: false,
+    issued_error: null,
+    init: function () {
+        this.issued_loading = true
+        this.issued_error = null
+    },
+    error: function(err) {
+        this.issued_loading = false
+        this.issued_error = err
+    },
+    success: function(data) {
+        this.issued_loading = false
+        this.issued_products = data
+    },
+    update: function(id, data) {
+        this.success([...updateArrayByProperty(this.issued_products, 'id', id, data)])
+    },
+    insert: function(data) {
+        const item = this.issued_products.find(i => i.id == data.id)
+        if(item) {
+            this.update(data.id, data)
+        } else {
+            this.issued_products.unshift(data)
+        }
     }
 }
 

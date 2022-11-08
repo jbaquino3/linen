@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
+use App\Models\IssuedProduct;
 use App\Models\Request as RequestModel;
 use Carbon\Carbon;
 
@@ -14,6 +15,17 @@ class TransactionController extends Controller
         $transactions = Transaction::all();
 
         return response()->json($transactions);
+    }
+
+    public function issued(Request $request) {
+        $issued = [];
+        if($request->user()->role == "USER") {
+            $issued = IssuedProduct::where("location_id", $request->user()->location_id)->get();
+        } else if ($request->user()->role == "ADMIN" || $request->user()->role == "SUPER_ADMIN") {
+            $issued = IssuedProduct::all();
+        }
+
+        return response()->json($issued);
     }
 
     public function read(Request $request, $id) {

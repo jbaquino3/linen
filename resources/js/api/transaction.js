@@ -6,6 +6,10 @@ export const index = async (params) => {
     return await _get(`/api/${resource}`, params)
 }
 
+export const issued = async () => {
+    return await _get(`/api/${resource}/issued`)
+}
+
 export const read = async (id) => {
     return await _get(`/api/${resource}/${id}`)
 }
