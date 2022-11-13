@@ -1,7 +1,6 @@
 <template>
     <div>
         <Location></Location>
-        <request-summary class="mt-2"></request-summary>
         <issued-products class="mt-2"></issued-products>
     </div>
 </template>

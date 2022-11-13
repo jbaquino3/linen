@@ -21,7 +21,7 @@ class ReportSeeder extends Seeder
         ReportItem::truncate();
         Report::truncate();
         
-        for($i=5; $i<12; $i++) {
+        for($i=5; $i<=10; $i++) {
             $locations = Location::all();
 
             foreach($locations as $location) {
