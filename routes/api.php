@@ -23,9 +23,15 @@ use App\Http\Controllers\ReportController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::get('/auth', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' => 'auth'], function () {
+    Route::get('/', function (Request $request) {
+        return $request->user();
+    });
+    Route::put('location/{location_id}', function (Request $request, $location_id) {
+        return $request->user()->update([
+            "location_id" => $location_id
+        ]);
+    });
 });
 
 Route::group(['prefix' => 'location'], function () {

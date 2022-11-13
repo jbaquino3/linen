@@ -23,7 +23,7 @@
                     </template>
 
                     <v-list>
-                        <v-list-item>
+                        <v-list-item @click="ward_dialog=true">
                             <v-list-item-title>
                                 Change Ward/Unit
                             </v-list-item-title>
@@ -59,22 +59,49 @@
         <v-container fluid>
             <router-view></router-view>
         </v-container>
+
+        <v-dialog v-model="ward_dialog" persistent width="600px">
+            <v-card :disabled="ward_loading" :loading="ward_loading">
+                <v-card-title>
+                    Change Ward/Unit
+                    <v-spacer></v-spacer>
+                    <v-icon v-if="authStore.user.location_id" @click="ward_dialog=false">{{mdiClose}}</v-icon>
+                </v-card-title>
+
+                <v-card-text>
+                    <v-select
+                        label="Ward/Unit"
+                        v-model="selected_location"
+                        :items="location_select_items"
+                    ></v-select>
+
+                    <v-btn :dark="!!selected_location" color="primary" :disabled="!selected_location" @click="save">
+                        Save
+                    </v-btn>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
 <script>
     import { useAuthStore } from '@/stores/auth'
+    import { useLocationStore } from '@/stores/location'
     import { ref, computed } from 'vue'
     import { useVuetify } from '@/plugins/UseVuetify'
-    import { mdiMenuDown } from '@mdi/js'
+    import { mdiMenuDown, mdiClose } from '@mdi/js'
+    import { storeToRefs } from 'pinia'
 
     const authStore = useAuthStore()
 
     export default {
         setup() {
             const vuetify = useVuetify()
-            const drawer = ref(true)
+            const {ward_dialog} = storeToRefs(authStore)
+            const ward_loading = ref(false)
             const selected_menu = ref(0)
+            const selected_location = ref(null)
+            const { location_select_items } = storeToRefs(useLocationStore())
 
             const darkMode = computed({
                 get() {
@@ -86,15 +113,23 @@
                 },
             })
 
+            async function save() {
+                ward_loading.value = true
+                const res = await authStore.updateUserLocation(selected_location.value)
+                if(res.status) {
+                    location.reload()
+                }
+            }
+
             return {
-                authStore, drawer, selected_menu,
-                darkMode, vuetify, menus, ...icons
+                authStore, ward_dialog, selected_menu, selected_location, location_select_items,
+                darkMode, vuetify, menus, ...icons, save, ward_loading
             }
         },
     }
 
     const icons = {
-        mdiMenuDown
+        mdiMenuDown, mdiClose
     }
 
     const menus = computed(() => {
