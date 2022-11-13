@@ -16,4 +16,10 @@ class IssuedProduct extends Model {
         "quantity" => "float",
         "issuance_additional_cost" => "float"
     ];
+
+    protected $appends = ['stock_numbers'];
+
+    public function getStockNumbersAttribute($value) {
+        return json_decode($this->attributes["stock_numbers"], true);
+    }
 }

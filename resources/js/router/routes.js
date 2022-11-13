@@ -21,6 +21,11 @@ export default [
                 component: () => import(/* webpackPrefetch: true */ "@/pages/issuances"),
             },
             {
+                path: "returns",
+                name: "Condemns & Returns",
+                component: () => import(/* webpackPrefetch: true */ "@/pages/returns"),
+            },
+            {
                 path: "issuances/items",
                 name: "Issuance Items",
                 component: () => import(/* webpackPrefetch: true */ "@/pages/issuance_items"),

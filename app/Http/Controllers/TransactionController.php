@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
+use App\Models\Material;
 use App\Models\IssuedProduct;
 use App\Models\Request as RequestModel;
 use Carbon\Carbon;
@@ -19,10 +20,36 @@ class TransactionController extends Controller
 
     public function issued(Request $request) {
         $issued = [];
+        $returned = [];
         if($request->user()->role == "USER") {
-            $issued = IssuedProduct::where("location_id", $request->user()->location_id)->get();
+            $issued = IssuedProduct::where("location_id", $request->user()->location_id)->where("type", "ISSUANCE")->get()->toArray();
+            $returned = IssuedProduct::where("location_id", $request->user()->location_id)->where("type", "<>", "ISSUANCE")->get();
         } else if ($request->user()->role == "ADMIN" || $request->user()->role == "SUPER_ADMIN") {
-            $issued = IssuedProduct::all();
+            $issued = IssuedProduct::where("type", "ISSUANCE")->get()->toArray();
+            $returned = IssuedProduct::where("type", "<>", "ISSUANCE")->get();
+        }
+
+        foreach($returned as $ret) {
+            $index = -1;
+            for($i=0; $i<sizeof($issued); $i++) {
+                if($issued[$i]['bulk_id'] == $ret->bulk_id && $issued[$i]['location_id'] == $ret->location_id) {
+                    $index = $i;
+                    break;
+                }
+            }
+            
+            $issued[$i]['quantity'] = sizeof(array_values(array_diff($issued[$i]['stock_numbers'], $ret->stock_numbers)));
+            $issued[$i]['stock_numbers'] = json_encode(array_values(array_diff($issued[$i]['stock_numbers'], $ret->stock_numbers)));
+
+            if($issued[$i]['quantity'] == 0) {
+                array_splice($issued, $i, 1);
+            }
+        }
+
+        for($i=0; $i<sizeof($issued); $i++) {
+            $material = Material::find($issued[$i]['material_stock_number']);
+
+            $issued[$i]['material_name'] = $material->description;
         }
 
         return response()->json($issued);
@@ -38,9 +65,18 @@ class TransactionController extends Controller
         $transaction = Transaction::create([
             "location_id" => $request->location_id,
             "type" => $request->type,
-            "is_final" => false,
+            "is_final" => $request->type != "ISSUANCE",
             "transaction_date" => date("Y-m-d")
         ]);
+
+        if($request->type != "ISSUANCE") {
+            $item = TransactionItem::create([
+                "transaction_id" => $transaction->id,
+                "product_bulk_id" => $request->product_bulk_id,
+                "stock_numbers" => $request->stock_numbers,
+                "issuance_additional_cost" => 0
+            ]);
+        }
 
         return response()->json($transaction->fresh(), 201);
     }

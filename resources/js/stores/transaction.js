@@ -126,13 +126,16 @@ const transactionObject = {
         this.success([...updateArrayByProperty(this.data, 'id', id, data)])
     },
     insert: function(data) {
-        const item = this.data.find(i => i.id == data.id)
-        if(item) {
-            this.update(data.id, data)
-        } else {
-            this.data.unshift(data)
-            this.selected_transaction = { items: [] }
+        if(data.type == "ISSUANCE") {
+            const item = this.data.find(i => i.id == data.id)
+            if(item) {
+                this.update(data.id, data)
+            } else {
+                this.data.unshift(data)
+                this.selected_transaction = { items: [] }
+            }
         }
+        this.transaction_loading = false
     },
     delete: function(id) {
         const index = this.data.findIndex(m => m.id == id)
