@@ -6,8 +6,7 @@
 
         <div class="d-flex mt-2">
             <div class="d-flex flex-column">
-                <div class="title font-weight-bold text-decoration-underline" @click="$router.push('/auth/issuances')">TRANSACTIONS</div>
-                <div class="caption font-italic">Issuances, Condemns, Returns, Losses</div>
+                <div class="title font-weight-bold text-decoration-underline" @click="$router.push('/auth/issuances')">ISSUED PRODUCTS</div>
             </div>
 
             <v-spacer></v-spacer>
@@ -47,11 +46,6 @@
 
             <template v-slot:[`item.type`]="{ item }">
                 <div class="d-flex flex-column">
-                    <div :class="($vuetify.theme.dark ? 'white--text' : ' ')">
-                        <div class="subtitle-1 font-weight-bold font-italic" @click="search=item.type">
-                            {{item.type}}
-                        </div>
-                    </div>
                     <div :class="($vuetify.theme.dark ? 'grey--text text--lighten-5' : '') + ' mb-2'">
                         {{item.quantity}} {{item.unit.toLowerCase()}}/s @ ₱{{item.unit_cost}}
                         <span class="red--text">+{{item.issuance_additional_cost}}%</span>

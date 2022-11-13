@@ -99,8 +99,7 @@
             return [
                 {icon: "dashboard", text: "Dashboard", route: "/auth/dashboard", access: true},
                 {icon: "request", text: "Requests", route: "/auth/requests", access: true},
-                {icon: "transaction", text: "Issuance", route: "/auth/issuances", access: true},
-                {icon: "parcel", text: "Condemn/Return", route: "/auth/returns", access: true},
+                {icon: "transaction", text: "Transactions", route: "/auth/issuances", access: true},
                 {icon: "location", text: "Ward & Offices", route: "/auth/locations", access: true},
                 {icon: "material", text: "Materials", route: "/auth/materials", access: true},
                 {icon: "product", text: "Products", route: "/auth/products", access: true},
@@ -111,7 +110,6 @@
             return [
                 {icon: "dashboard", text: "Dashboard", route: "/auth/dashboard", access: true},
                 {icon: "request", text: "Requests", route: "/auth/requests", access: true},
-                {icon: "parcel", text: "Condemn/Return", route: "/auth/return", access: true},
                 {icon: "report", text: "Monthly Reports", route: "/auth/reports", access: true}
             ]
         }

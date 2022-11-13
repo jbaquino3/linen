@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, reactive, watchEffect, toRefs } from 'vue'
+import { computed, reactive, watchEffect, toRefs, ref } from 'vue'
 import * as transactionApi from '@/api/transaction'
 import { updateArrayByProperty } from '@/plugins/helpers'
 import useFilters from '../plugins/filter'
@@ -10,6 +10,7 @@ export const useTransactionStore = defineStore('transaction', () => {
     const transaction = reactive(transactionObject)
     const issued = reactive(issuedObject)
     const filter = getFilterObject()
+    const return_dialog = ref(false)
     const computed_transactions = computed(() => transactionFilters.applyFilter(transaction.data, filter.filterable, filter.filters))
 
     watchEffect(() => { filter.updateFilters(transaction.data) })
@@ -93,6 +94,7 @@ export const useTransactionStore = defineStore('transaction', () => {
         ...toRefs(transaction),
         ...toRefs(filter),
         ...toRefs(issued),
+        return_dialog,
         computed_transactions,
         fetchTransactions,
         updateTransaction,

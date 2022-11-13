@@ -3,13 +3,32 @@
         <table-filters
             :filterable="filterable"
             :actions="[
-                {text: 'New Issuance', color: 'primary', emit: 'add', icon: mdiPlus}
+                {text: 'New Transaction', color: 'primary', emit: 'add', icon: mdiPlus}
             ]"
             v-model="filters"
             @search="s => search=s"
             @reload="reload"
-            @add="$router.push('/auth/issuances/items')"
+            @add="new_dialog=true"
         ></table-filters>
+
+        <v-dialog v-model="new_dialog" width="375">
+            <v-card>
+                <v-list>
+                    <v-list-item @click="openIssuance">
+                        <v-list-item-title>
+                            Issuance
+                        </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="openReturn">
+                        <v-list-item-title>
+                            Return/Condemn
+                        </v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-card>
+        </v-dialog>
+
+        <return-dialog></return-dialog>
 
         <v-alert v-if="transaction_error" type="error" text class="mt-2">
             {{transactions_error}}
@@ -64,6 +83,7 @@
     import { storeToRefs } from 'pinia'
     import { useRouter } from '@/plugins/UseRouter'
     import { mdiPlus } from '@mdi/js'
+    import ReturnDialog from './ReturnDialog.vue'
 
     export default {
         setup() {
@@ -75,9 +95,11 @@
                 transaction_error,
                 selected_transaction,
                 filters,
-                filterable
+                filterable,
+                return_dialog
             } = storeToRefs(transactionStore)
             const search = ref("")
+            const new_dialog = ref(false)
 
             onMounted(() => {
                 reload()
@@ -96,20 +118,38 @@
                 transactionStore.deleteTransaction(item.id)
             }
 
+            function openIssuance() {
+                new_dialog.value = false
+                router.push('/auth/issuances/items')
+            }
+
+            function openReturn () {
+                new_dialog.value = false
+                return_dialog.value = true
+            }
+
             return {
                 computed_transactions,
                 transaction_loading,
                 transaction_error,
                 headers,
+                new_dialog,
                 search,
+                return_dialog,
                 filters,
                 filterable,
                 openEdit,
                 destroy,
                 reload,
+                openIssuance,
+                openReturn,
                 ...icons
             }
         },
+
+        components: {
+            ReturnDialog
+        }
     }
 
     const icons = {
