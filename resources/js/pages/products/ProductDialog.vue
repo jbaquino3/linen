@@ -35,13 +35,12 @@
 
                             <v-col cols="12">
                                 <v-text-field
-                                    v-if="product.material_unit"
-                                    :label="'Quantity of used material. Available: ' + material_available + ' ' + product.material_unit.toLowerCase() + '/s'"
+                                    :label="'Quantity of used material. Available: ' + material_available + ' ' + product.material_unit + '/s'"
                                     v-model="product.material_quantity"
                                     type="number"
                                 >
                                     <template v-slot:append>
-                                        {{product.material_unit.toLowerCase()}}/s @ ₱{{product.material_unit_cost}} each
+                                        {{product.material_unit}}/s @ ₱{{product.material_unit_cost}} each
                                     </template>
                                 </v-text-field>
                             </v-col>
