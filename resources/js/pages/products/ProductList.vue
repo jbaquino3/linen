@@ -43,7 +43,7 @@
                     <available-bar
                         :disabled="!!item.archived_at"
                         disabled_label="ARCHIVED"
-                        :available="item.quantity-item.quantity_issued"
+                        :available="item.available"
                         :total="item.quantity"
                         :unit="item.unit"
                     ></available-bar>
