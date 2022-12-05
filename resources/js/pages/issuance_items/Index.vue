@@ -7,7 +7,7 @@
         </v-alert>
 
         <div>
-            <div>
+            <div v-if="selected_transaction.type == 'ISSUANCE'">
                 <issuance-form></issuance-form>
             </div>
             <div ref="printable">
@@ -20,13 +20,21 @@
 <script>
     import { useTransactionStore } from '@/stores/transaction'
     import { storeToRefs } from 'pinia'
+    import { useRoute } from '@/plugins/UseRouter'
+    import { onMounted } from 'vue'
 
     export default {
         setup() {
-            const { transaction_error } = storeToRefs(useTransactionStore())
+            const { transaction_error, selected_transaction } = storeToRefs(useTransactionStore())
+            const route = useRoute()
+
+            onMounted(() => {
+                selected_transaction.value.type = route.query.type
+            })
 
             return {
-                transaction_error
+                transaction_error,
+                selected_transaction
             }
         },
 
