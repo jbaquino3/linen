@@ -25,18 +25,22 @@
                 <tr>
                     <td class="tg-p7cy" rowspan="3">
                         <div style="font-weight:bold" class="caption">GENERAL SERVICES SECTION - LINEN ROOM</div>
-                        <div style="font-weight:bold" class="subtitle-1">INVENTORY (LINEN) CUSTODIAN SLIP</div>
+                        <div style="font-weight:bold" class="subtitle-1" v-if="selected_transaction.type == 'ISSUANCE'">INVENTORY (LINEN) CUSTODIAN SLIP</div>
+                        <div style="font-weight:bold" class="subtitle-1" v-else>LIST OF LINEN FOR CONDEMN</div>
                     </td>
                     <td class="tg-ycr8">Form No.</td>
-                    <td class="tg-ycr8 text-center">HS-GSS-008</td>
+                    <td class="tg-ycr8 text-center" v-if="selected_transaction.type == 'ISSUANCE'">HS-GSS-008</td>
+                    <td class="tg-ycr8 text-center" v-else>HS-GSS-012</td>
                 </tr>
                 <tr>
                     <td class="tg-ycr8">Revision No.</td>
-                    <td class="tg-ycr8 text-center">1</td>
+                    <td class="tg-ycr8 text-center" v-if="selected_transaction.type == 'ISSUANCE'">1</td>
+                    <td class="tg-ycr8 text-center" v-else>Φ</td>
                 </tr>
                 <tr>
                     <td class="tg-ycr8">Effectivity Date</td>
-                    <td class="tg-ycr8 text-center">August 16, 2019</td>
+                    <td class="tg-ycr8 text-center" v-if="selected_transaction.type == 'ISSUANCE'">August 16, 2019</td>
+                    <td class="tg-ycr8 text-center" v-else>August 1, 2014</td>
                 </tr>
             </thead>
         </table>
@@ -44,8 +48,17 @@
 </template>
 
 <script>
+    import { useTransactionStore } from '@/stores/transaction'
+    import { storeToRefs } from 'pinia'
+
     export default {
-        name: "Header"
+        setup() {
+            const { selected_transaction } = storeToRefs(useTransactionStore())
+
+            return {
+                selected_transaction
+            }
+        }
     }
 </script>
 

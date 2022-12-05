@@ -65,7 +65,17 @@
                 <template v-slot:[`item.actions`]="{ item }">
                     <div class="d-flex">
                         <div class="mr-1">
-                            <table-list-button @click="openEdit(item)"></table-list-button>
+                            <table-list-button @click="openEdit(item)" v-if="item.type=='ISSUANCE'"></table-list-button>
+                            <v-tooltip top v-else>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn v-bind="attrs" v-on="on" small elevation="0" color="red" dark @click="openEdit(item)">
+                                        <v-icon>
+                                            {{mdiPrinter}}
+                                        </v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Print</span>
+                            </v-tooltip>
                         </div>
                         <div class="mr-1">
                             <table-delete-button :disabled="item.is_final > 0" @delete="destroy(item)"></table-delete-button>
@@ -82,7 +92,7 @@
     import { useTransactionStore } from '@/stores/transaction'
     import { storeToRefs } from 'pinia'
     import { useRouter } from '@/plugins/UseRouter'
-    import { mdiPlus } from '@mdi/js'
+    import { mdiPlus, mdiPrinter } from '@mdi/js'
     import ReturnDialog from './ReturnDialog.vue'
 
     export default {
@@ -111,7 +121,7 @@
 
             function openEdit(item) {
                 selected_transaction.value = Object.assign({}, item)
-                router.push("/auth/issuances/items")
+                router.push("/auth/issuances/items?type=" + item.type)
             }
 
             function destroy(item) {
@@ -153,7 +163,7 @@
     }
 
     const icons = {
-        mdiPlus
+        mdiPlus, mdiPrinter
     }
 
     const headers = [

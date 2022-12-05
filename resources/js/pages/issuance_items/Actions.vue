@@ -43,7 +43,7 @@
             const { selected_transaction } = storeToRefs(transactionStore)
 
             function print() {
-                usePrinter().print(false)
+                usePrinter().print(selected_transaction.value.type != 'ISSUANCE')
             }
 
             function finalize() {
