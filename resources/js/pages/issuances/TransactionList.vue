@@ -130,7 +130,7 @@
 
             function openIssuance() {
                 new_dialog.value = false
-                router.push('/auth/issuances/items')
+                router.push('/auth/issuances/items?type=ISSUANCE')
             }
 
             function openReturn () {
