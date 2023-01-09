@@ -96,7 +96,7 @@
                             <v-btn v-if="item.status=='ISSUED'" small :dark="!!item.transaction" color="purple" :disabled="!item.transaction" @click="openPrint(item)">Print</v-btn>
                         </div>
                         <div class="mr-1">
-                            <table-delete-button :disabled="!!item.processed_at" @delete="destroy(item)"></table-delete-button>
+                            <table-delete-button :disabled="!!item.prepared_at" @delete="destroy(item)"></table-delete-button>
                         </div>
                     </div>
                 </template>
