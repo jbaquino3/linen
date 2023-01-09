@@ -63,6 +63,16 @@ class RequestController extends Controller
     }
 
     public function store(Request $request) {
+        // One request at a time
+        $other = RequestModel::where("location_id", $request->user()->location_id)
+            ->whereNull("cancelled_at")
+            ->whereNull("processed_at")
+            ->first();
+
+        if($other) {
+            return response()->json("You still have a pending request. Please wait for your pending request to be processed before requesting another one.", 409);
+        } 
+
         $request_model = RequestModel::create([
             "name" => $request->name,
             "quantity" => $request->quantity,
