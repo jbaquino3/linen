@@ -124,4 +124,14 @@ class RequestController extends Controller
 
         return response()->json($updated);
     }
+
+    public function issueRequest($id) {
+        $request = RequestModel::find($id);
+        $updated = $request->update([
+            "issued_at" => Carbon::now(),
+            "issued_by" => \Auth::id()
+        ]);
+
+        return response()->json($updated);
+    }
 }

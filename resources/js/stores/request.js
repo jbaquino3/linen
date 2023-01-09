@@ -91,6 +91,16 @@ export const useRequestStore = defineStore('request', () => {
             requests.error(res.data)
         }
     }
+
+    async function issueRequest(id) {
+        requests.init()
+        const res = await requestApi.issueRequest(id)
+        if(res.status) {
+            fetchRequests()
+        } else {
+            requests.error(res.data)
+        }
+    }
   
     return {
         ...toRefs(requests),
@@ -106,7 +116,8 @@ export const useRequestStore = defineStore('request', () => {
         deleteRequest,
         createRemark,
         processRequest,
-        readyRequest
+        readyRequest,
+        issueRequest
     }
 })
 

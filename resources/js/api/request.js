@@ -30,6 +30,10 @@ export const readyRequest = async (id) => {
     return await _put(`/api/${resource}/ready/${id}`)
 }
 
+export const issueRequest = async (id) => {
+    return await _put(`/api/${resource}/issue/${id}`)
+}
+
 export const update = async (data, id) => {
     return await _put(`/api/${resource}/${id}`, data)
 }

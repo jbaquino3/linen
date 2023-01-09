@@ -161,10 +161,7 @@
             }
 
             function issue(item) {
-                selected_transaction.value.location_id = item.location_id
-                selected_transaction.value.location_name = item.location_name
-                selected_transaction.value.items = []
-                router.push("/auth/issuances/items?type=ISSUANCE")
+                requestStore.issueRequest(item.id)
             }
 
             function ready(item) {

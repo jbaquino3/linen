@@ -102,6 +102,7 @@ Route::group(['prefix' => 'request'], function () {
     Route::put('{id}', [RequestController::class, 'update']);
     Route::put('process/{id}', [RequestController::class, 'processRequest']);
     Route::put('ready/{id}', [RequestController::class, 'readyRequest']);
+    Route::put('issue/{id}', [RequestController::class, 'issueRequest']);
     Route::delete('{id}', [RequestController::class, 'delete']);
 });
 

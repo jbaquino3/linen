@@ -108,13 +108,13 @@ class TransactionController extends Controller
         ]);
 
         $requests_update = RequestModel::where("location_id", $transaction->location_id)
-            ->whereNotNull("prepared_at")
-            ->whereNull("issued_at")
+            ->whereNotNull("processed_at")
+            ->whereNull("prepared_at")
             ->whereNull("cancelled_at")
             ->update([
                 "transaction_id" => $transaction->id,
-                "issued_at" => Carbon::now(),
-                "issued_by" => $request->user() ? $request->user()->employeeid : null
+                "prepared_at" => Carbon::now(),
+                "prepared_by" => $request->user() ? $request->user()->employeeid : null
             ]);
 
         return response()->json($transaction->fresh());
