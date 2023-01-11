@@ -16,7 +16,7 @@ class TransactionController extends Controller
         $transactions = [];
 
         if($request->user()->role == "USER") {
-            $transactions = Transaction::where("location_id", $request->user()->location_id);
+            $transactions = Transaction::where("location_id", $request->user()->location_id)->get();
         } else if ($request->user()->role == "ADMIN" || $request->user()->role == "SUPER_ADMIN") {
             $transactions = Transaction::all();
         }
