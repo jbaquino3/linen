@@ -13,7 +13,13 @@ use Carbon\Carbon;
 class TransactionController extends Controller
 {
     public function index(Request $request) {
-        $transactions = Transaction::all();
+        $transactions = [];
+
+        if($request->user()->role == "USER") {
+            $transactions = Transaction::where("location_id", $request->user()->location_id);
+        } else if ($request->user()->role == "ADMIN" || $request->user()->role == "SUPER_ADMIN") {
+            $transactions = Transaction::all();
+        }
 
         return response()->json($transactions);
     }
@@ -58,10 +64,18 @@ class TransactionController extends Controller
     public function read(Request $request, $id) {
         $transaction = Transaction::find($id);
 
+        if($request->user()->role == "USER" && $transaction->location_id != $request->user()->location_id) {
+            return response()->json("You do not have access to this resource.", 403);
+        }
+
         return response()->json($transaction);
     }
 
     public function store(Request $request) {
+        if($request->user()->role == "USER") {
+            return response()->json("You do not have access to create a transaction.", 403);
+        }
+
         $transaction = Transaction::create([
             "location_id" => $request->location_id,
             "type" => $request->type,
@@ -82,6 +96,10 @@ class TransactionController extends Controller
     }
 
     public function addItem(Request $request, $id) {
+        if($request->user()->role == "USER") {
+            return response()->json("You do not have access to create a transaction.", 403);
+        }
+
         $transaction_item = TransactionItem::create([
             "transaction_id" => $id,
             "product_bulk_id" => $request->product_bulk_id,
@@ -94,6 +112,10 @@ class TransactionController extends Controller
     }
 
     public function update(Request $request, $id) {
+        if($request->user()->role == "USER") {
+            return response()->json("You do not have access to update a transaction.", 403);
+        }
+
         $transaction = Transaction::find($id);
         $updated = $transaction->update($request->all());
 
@@ -101,6 +123,10 @@ class TransactionController extends Controller
     }
 
     public function finalize(Request $request, $id) {
+        if($request->user()->role == "USER") {
+            return response()->json("You do not have access to update a transaction.", 403);
+        }
+
         $transaction = Transaction::find($id);
 
         $updated = $transaction->update([
@@ -121,6 +147,10 @@ class TransactionController extends Controller
     }
 
     public function delete(Request $request, $id) {
+        if($request->user()->role == "USER") {
+            return response()->json("You do not have access to delete a transaction.", 403);
+        }
+
         TransactionItem::where("transaction_id", $id)->delete();
         $transaction = Transaction::find($id);
         $deleted = $transaction->delete();
